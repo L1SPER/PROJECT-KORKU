@@ -1,136 +1,50 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
 
-public class PlayerMovement : MonoBehaviour
+public class CharacterMovement : MonoBehaviour
 {
-    private float zSpeed;
-    private float xSpeed;
+    public CharacterController controller;
+    public Transform orientation;
 
-    [SerializeField]
-    private float walkingSpeedMultiplier;
-    [SerializeField]
-    private float runningSpeedMultiplier;
-    [SerializeField]
-    private float crouchSpeedMultiplier;
-    [SerializeField]
-    private float speedMultiplier;
+    public float walkSpeed = 5f;
+    public float runSpeed = 8f;
+    public float gravity = -9.81f;
+    public float groundDistance = 0.4f;
+    public LayerMask groundMask;
 
-    [SerializeField]
-    Transform groundCheck;
-    [SerializeField]
-    private float groundCheckRadius;
-    [SerializeField]
-    private LayerMask groundLayer;
+    private Vector3 velocity;
     private bool isGrounded;
-    private Vector3 moveSpeed;
-    [SerializeField] private Transform face;
 
-    private bool canRun;
-    private bool isRunning;
-
-    [Header("Stamina Main Parameters")]
-    [SerializeField] private float currentStamina;
-    [SerializeField] private float maxStamina = 100f;
-
-    [Header("Stamina Regen Parameters")]
-    [Range(0, 50)][SerializeField] private float staminaDrain=20;
-    [Range(0, 50)][SerializeField] private float staminaRegen=5;
-
-    public StaminaBar staminaBar;
-
-    void Start()
-    {
-        canRun = true;
-        isRunning= false;
-        speedMultiplier = walkingSpeedMultiplier;
-        currentStamina = maxStamina;
-        staminaBar.SetMaxStamina(maxStamina);
-    }
     void Update()
     {
-        StaminaControl();
-        GroundCheck();
-        Movement();
+        Move();
     }
-    private void Movement()
-    {
-        xSpeed = Input.GetAxis("Vertical");
-        zSpeed = Input.GetAxis("Horizontal");
 
-        if (Input.GetKeyDown(KeyCode.LeftControl))
+    void Move()
+    {
+        // Zeminde miyiz?
+        isGrounded = Physics.CheckSphere(transform.position + Vector3.down * (controller.height / 2), groundDistance, groundMask);
+
+        if (isGrounded && velocity.y < 0)
         {
-            transform.localScale = new Vector3(1, 0.5f, 1);
-            speedMultiplier = crouchSpeedMultiplier;
-            canRun = false;
+            velocity.y = -2f; // Zemine yapıştır
         }
-        else if (Input.GetKeyUp(KeyCode.LeftControl))
+        else
         {
-            transform.localScale = new Vector3(1, 1, 1);
-            speedMultiplier = walkingSpeedMultiplier;
-            canRun = true;
-        }
-        else if (Input.GetKeyDown(KeyCode.LeftShift) && canRun)
-        {
-            speedMultiplier = runningSpeedMultiplier;
-            isRunning = true;
-        }
-        else if (Input.GetKeyUp(KeyCode.LeftShift) || !canRun)
-        {
-            speedMultiplier = walkingSpeedMultiplier;
-            isRunning = false;
+            velocity.y += gravity * Time.deltaTime;
         }
 
-        moveSpeed = face.forward * xSpeed * speedMultiplier + face.right * zSpeed * speedMultiplier;
-        transform.position += moveSpeed;
-    }
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawSphere(groundCheck.transform.position,groundCheckRadius);
-    }
-    private bool GroundCheck()
-    {
-        return isGrounded=Physics.CheckSphere(groundCheck.transform.position, groundCheckRadius, groundLayer);
-    }
-    private void StaminaControl()
-    {
-        if (!isRunning)
-            RegenerateStamina();
-        else if(isRunning)
-            DrainStamina();
+        // Hareket girdisi
+        float x = Input.GetAxis("Horizontal");
+        float z = Input.GetAxis("Vertical");
 
-        if(currentStamina<=0)
-        {
-            StartCoroutine(nameof(Run));
-            currentStamina = 0;
-        }
-    }
-    private IEnumerator Run()
-    {
-        if(!canRun)
-            yield break;
-        canRun = false;
-        yield return new WaitForSeconds(3);
-        canRun = true;
-    }
-    public void DrainStamina()
-    {
-        currentStamina -= staminaDrain * Time.deltaTime;
-        staminaBar.SetStamina(currentStamina);
-    }
-    private void RegenerateStamina()
-    {
-        if (currentStamina <= maxStamina - 0.01)
-        {
-            currentStamina += staminaRegen * Time.deltaTime;
-            if (currentStamina >= maxStamina)
-            {
-                currentStamina = maxStamina;
-            }
-            staminaBar.SetStamina(currentStamina);
-        }
+        // Yönü al
+        Vector3 move = orientation.forward * z + orientation.right * x;
+
+        // Koşma mı yürüyüş mü?
+        float speed = Input.GetKey(KeyCode.LeftShift) ? runSpeed : walkSpeed;
+
+        controller.Move(move * speed * Time.deltaTime);
+        
+        controller.Move(velocity * Time.deltaTime);
     }
 }

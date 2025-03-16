@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class Grid : MonoBehaviour
@@ -10,6 +11,7 @@ public class Grid : MonoBehaviour
     [SerializeField] public Vector2 gridWorldSize;
     [SerializeField] public float nodeRadius;
     public Node[,] grid;
+    public Node[,] gridFloor;
 
     public float nodeDiameter;
     public int gridSizeX, gridSizeY;
@@ -24,6 +26,12 @@ public class Grid : MonoBehaviour
         gridSizeY = Mathf.RoundToInt(gridWorldSize.y / nodeDiameter);
         CreateGrid();
         CreateFloor();
+        FindStartNode();
+    }
+
+    private void FindStartNode()
+    {
+        gridFloor[x, y].floor.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = Color.red;
     }
 
     // Update is called once per frame
@@ -49,7 +57,7 @@ public class Grid : MonoBehaviour
     }
     private void CreateFloor()
     {
-        grid = new Node[gridSizeX, gridSizeY];
+        gridFloor = new Node[gridSizeX, gridSizeY];
         bottomLeft = transform.position - Vector3.right * gridWorldSize.x / 2 - Vector3.forward * gridWorldSize.y / 2;
         Debug.Log("En sol alt kose: " + bottomLeft);
 
@@ -62,15 +70,26 @@ public class Grid : MonoBehaviour
                 if (walkable)
                 {
                     GameObject floor = Instantiate(whiteFloor, worldPoint, Quaternion.identity);
-                    grid[x, y] = new Node(floor, walkable, worldPoint, x, y);
+                    gridFloor[x, y] = new Node(floor, walkable, worldPoint, x, y);
                     floor.transform.SetParent(parentFloorTransform);
                 }
                 else
                 {
                     GameObject floor = Instantiate(redFloor, worldPoint, Quaternion.identity);
-                    grid[x, y] = new Node(floor, walkable, worldPoint, x, y);
+                    gridFloor[x, y] = new Node(floor, walkable, worldPoint, x, y);
                     floor.transform.SetParent(parentFloorTransform);
                 }
+            }
+        }
+    }
+    void OnDrawGizmos()
+    {
+        if (grid != null)
+        {
+            foreach (Node n in grid)
+            {
+                Gizmos.color = (n.walkable) ? Color.white : Color.red;
+                Gizmos.DrawCube(n.worldPosition, Vector3.one * (nodeDiameter - .1f));
             }
         }
     }
