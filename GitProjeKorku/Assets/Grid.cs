@@ -18,7 +18,7 @@ public class Grid : MonoBehaviour
     Vector3 bottomLeft;
 
     [SerializeField] int x, y;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    [SerializeField] private float offset;
     void Start()
     {
         nodeDiameter = nodeRadius * 2;
@@ -28,17 +28,21 @@ public class Grid : MonoBehaviour
         CreateFloor();
         FindStartNode();
     }
-
+    /// <summary>
+    /// Başlangıç noktası bulunur.
+    /// </summary>
     private void FindStartNode()
     {
         gridFloor[x, y].floor.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = Color.red;
     }
 
-    // Update is called once per frame
     void Update()
     {
-
+        UpdateFloor();
     }
+    /// <summary>
+    /// Grid oluşturulur.
+    /// </summary>
     private void CreateGrid()
     {
         grid = new Node[gridSizeX, gridSizeY];
@@ -55,6 +59,9 @@ public class Grid : MonoBehaviour
             }
         }
     }
+    /// <summary>
+    /// Zemin oluşturulur.
+    /// </summary>
     private void CreateFloor()
     {
         gridFloor = new Node[gridSizeX, gridSizeY];
@@ -82,7 +89,86 @@ public class Grid : MonoBehaviour
             }
         }
     }
-    void OnDrawGizmos()
+    /// <summary>
+    /// Zemin noktası güncellenir.
+    /// </summary>
+    private void UpdateFloor()
+    {
+        bottomLeft = transform.position - Vector3.right * gridWorldSize.x / 2 - Vector3.forward * gridWorldSize.y / 2;
+        Debug.Log("En sol alt kose: " + bottomLeft);
+
+        for (int x = 0; x < gridSizeX; x++)
+        {
+            for (int y = 0; y < gridSizeY; y++)
+            {
+                Vector3 worldPoint = bottomLeft + Vector3.right * (x * nodeDiameter + nodeRadius) + Vector3.forward * (y * nodeDiameter + nodeRadius);
+                bool walkable = !Physics.CheckSphere(worldPoint, nodeRadius-offset, unwalkableMask);
+                if (walkable)
+                {
+                    gridFloor[x, y].floor.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = Color.white;
+                }
+                else
+                {
+                    gridFloor[x, y].floor.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = Color.red;
+                }
+            }
+        }
+    }
+    /// <summary>
+    /// Grid dünyasındaki noktanın dünya noktası hesaplanır.
+    /// </summary>
+    /// <param name="xRandom"></param>
+    /// <param name="zRandom"></param>
+    /// <returns></returns>
+    public Vector3 CalculateWorldPoint(int xRandom, int zRandom)
+    {
+        return bottomLeft + Vector3.right * (xRandom * nodeDiameter + nodeRadius) + Vector3.forward * (zRandom * nodeDiameter + nodeRadius);
+    }
+    /// <summary>
+    /// Oda uygun mu kontrol edilir.
+    /// </summary>
+    /// <param name="xRandom"></param>
+    /// <param name="zRandom"></param>
+    /// <param name="room"></param>
+    /// <returns></returns>
+    public bool CheckIfRoomFits(int xRandom, int zRandom, GameObject room)
+    {
+        int xLocal = (int)(room.transform.GetChild(0).transform.localScale.x/nodeDiameter);
+        int zLocal = (int)(room.transform.GetChild(0).transform.localScale.z/nodeDiameter);
+
+        for (int i = 0; i < xLocal; i++)
+        {
+            for (int j = 0; j < zLocal; j++)
+            {
+                if (grid[xRandom + i, zRandom + j].walkable == false)
+                {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    /// <summary>
+    /// Oda çizilir.
+    /// </summary>
+    /// <param name="xRandom"></param>
+    /// <param name="zRandom"></param>
+    /// <param name="room"></param>
+    public void DrawRoom(int xRandom, int zRandom, GameObject room)
+    {
+        int xLocal = (int)(room.transform.GetChild(0).transform.localScale.x/nodeDiameter);
+        int zLocal = (int)(room.transform.GetChild(0).transform.localScale.z/nodeDiameter);
+
+        for (int i = 0; i <= xLocal+1; i++)
+        {
+            for (int j = 0; j <= zLocal+1; j++)
+            {
+                grid[xRandom + i-1, zRandom + j-1].walkable = false;
+                gridFloor[xRandom + i-1, zRandom + j-1].walkable=false;
+            }
+        }
+    }
+    /* void OnDrawGizmos()
     {
         if (grid != null)
         {
@@ -92,5 +178,5 @@ public class Grid : MonoBehaviour
                 Gizmos.DrawCube(n.worldPosition, Vector3.one * (nodeDiameter - .1f));
             }
         }
-    }
+    } */
 }
