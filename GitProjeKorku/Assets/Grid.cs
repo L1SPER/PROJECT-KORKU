@@ -159,12 +159,12 @@ public class Grid : MonoBehaviour
         int xLocal = (int)(room.transform.GetChild(0).transform.localScale.x/nodeDiameter);
         int zLocal = (int)(room.transform.GetChild(0).transform.localScale.z/nodeDiameter);
 
-        for (int i = 0; i <= xLocal+1; i++)
+        for (int i = 0; i < xLocal; i++)
         {
-            for (int j = 0; j <= zLocal+1; j++)
+            for (int j = 0; j < zLocal; j++)
             {
-                grid[xRandom + i-1, zRandom + j-1].walkable = false;
-                gridFloor[xRandom + i-1, zRandom + j-1].walkable=false;
+                grid[xRandom + i, zRandom + j].walkable = false;
+                gridFloor[xRandom + i, zRandom + j].walkable=false;
             }
         }
     }

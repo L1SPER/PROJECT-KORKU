@@ -82,10 +82,10 @@ public class RoomGeneration : MonoBehaviour
             int xLocal = (int)room.transform.GetChild(0).transform.localScale.x / 4;
             int zLocal = (int)room.transform.GetChild(0).transform.localScale.z / 4;
 
-            int xRandom = Randomize(1, x - 2);
-            int zRandom = Randomize(1, z - 2);
+            int xRandom = Randomize(1, x - 1);
+            int zRandom = Randomize(1, z - 1);
             Debug.Log("Random x: " + xRandom + " Random z: " + zRandom);
-            if (xRandom < x - xLocal && zRandom < z - zLocal && CheckRoom(xRandom, zRandom, room))
+            if (xRandom <= x - xLocal && zRandom <= z - zLocal && CheckRoom(xRandom, zRandom, room))
             {
                 Vector3 randomWorldPos = grid.CalculateWorldPoint(xRandom, zRandom);
                 Debug.Log("Random World Pos: " + randomWorldPos);
@@ -111,7 +111,8 @@ public class RoomGeneration : MonoBehaviour
             if (room.transform.GetChild(0).GetChild(randomDoor).gameObject.activeSelf)
             {
                 counter++;
-                room.transform.GetChild(0).GetChild(randomDoor).GetChild(0).GetComponent<MeshRenderer>().material.color = Color.green;
+                room.transform.GetChild(0).GetChild(0).GetChild(randomDoor).GetComponent<Door>().isOpen = true;
+                room.transform.GetChild(0).GetChild(0).GetChild(randomDoor).GetChild(0).GetComponent<MeshRenderer>().material.color = Color.green;
             }
         }
     }
