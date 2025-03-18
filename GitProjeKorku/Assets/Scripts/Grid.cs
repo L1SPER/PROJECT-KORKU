@@ -133,8 +133,8 @@ public class Grid : MonoBehaviour
     /// <returns></returns>
     public bool CheckIfRoomFits(int xRandom, int zRandom, GameObject room)
     {
-        int xLocal = (int)(room.transform.GetChild(0).transform.localScale.x/nodeDiameter);
-        int zLocal = (int)(room.transform.GetChild(0).transform.localScale.z/nodeDiameter);
+        int xLocal = (int) (room.transform.GetChild(0).GetComponent<Room>().size.x /nodeDiameter);
+        int zLocal = (int) (room.transform.GetChild(0).GetComponent<Room>().size.z /nodeDiameter);
 
         for (int i = 0; i < xLocal; i++)
         {
@@ -156,8 +156,8 @@ public class Grid : MonoBehaviour
     /// <param name="room"></param>
     public void DrawRoom(int xRandom, int zRandom, GameObject room)
     {
-        int xLocal = (int)(room.transform.GetChild(0).transform.localScale.x/nodeDiameter);
-        int zLocal = (int)(room.transform.GetChild(0).transform.localScale.z/nodeDiameter);
+        int xLocal = (int)( room.transform.GetChild(0).GetComponent<Room>().size.x/nodeDiameter);
+        int zLocal = (int)( room.transform.GetChild(0).GetComponent<Room>().size.z/nodeDiameter);
 
         for (int i = 0; i < xLocal; i++)
         {

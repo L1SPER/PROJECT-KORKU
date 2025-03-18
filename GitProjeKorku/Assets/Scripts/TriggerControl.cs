@@ -1,17 +1,33 @@
 using System;
-using NUnit.Framework;
 using UnityEngine;
 
 public class TriggerControl : MonoBehaviour
 {
+    Collider[] colliders;
     void Start()
     {
         Control();
+        DisableColliders();
+    }
+
+    private void DisableColliders()
+    {
+        if (colliders.Length > 1) // 1 ise sadece kendisini algılamıştır
+        {
+            for (int i = 0; i < colliders.Length; i++)
+            {
+                if(colliders[i].gameObject.GetComponent<Door>().isIntersect) 
+                {
+                    colliders[i].enabled = false;
+                }
+            }
+            
+        }
     }
 
     private void Control()
     {
-        Collider[] colliders = Physics.OverlapBox(transform.position, new Vector3(1.1f,1.1f, 1.1f), Quaternion.identity, LayerMask.GetMask("Door"));
+        colliders = Physics.OverlapBox(transform.position, new Vector3(1.1f,1.1f, 1.1f), Quaternion.identity, LayerMask.GetMask("Door"));
         if (colliders.Length > 1) // 1 ise sadece kendisini algılamıştır
         {
             if(isIntersectDoors(colliders))
@@ -31,12 +47,13 @@ public class TriggerControl : MonoBehaviour
         }
         return false;
     }
+
     private void SetDoorsIsOpenTrue(Collider[] colliders)
     {
         for (int i = 0; i < colliders.Length; i++)
         {
-            colliders[i].gameObject.GetComponent<Door>().isOpen = true;
             colliders[i].gameObject.GetComponent<Door>().isIntersect = true;
+            colliders[i].enabled = false;
             colliders[i].gameObject.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = Color.green;
         }
     }

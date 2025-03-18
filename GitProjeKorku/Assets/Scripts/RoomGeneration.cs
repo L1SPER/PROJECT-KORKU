@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class RoomGeneration : MonoBehaviour
@@ -19,10 +21,12 @@ public class RoomGeneration : MonoBehaviour
     [SerializeField] bool rooms3x3Active;
     [SerializeField] bool rooms3x4Active;
 
+    List<GameObject> rooms = new List<GameObject>();
     /// <summary>
     /// X ve z değeri grid boyutunu belirler.
     /// </summary>
     int x, z;
+    int nodeDiameter;
     Grid grid;
     void Awake()
     {
@@ -30,8 +34,9 @@ public class RoomGeneration : MonoBehaviour
     }
     void Start()
     {
-        x = 25;
-        z = 25;
+        x = grid.gridSizeX;
+        z = grid.gridSizeY;
+        nodeDiameter = (int)grid.nodeDiameter;
         CreateRooms();
     }
     /// <summary>
@@ -79,10 +84,10 @@ public class RoomGeneration : MonoBehaviour
 
         while (attempts < maxAttempts)
         {
-            int xLocal = (int)room.transform.GetChild(0).transform.localScale.x / 4;
-            int zLocal = (int)room.transform.GetChild(0).transform.localScale.z / 4;
+            int xLocal = (int) room.transform.GetChild(0).GetComponent<Room>().size.x /nodeDiameter;
+            int zLocal = (int)room.transform.GetChild(0).GetComponent<Room>().size.z / nodeDiameter;
 
-            int xRandom = Randomize(1, x - 1);
+            int xRandom = Randomize(1, x -1);
             int zRandom = Randomize(1, z - 1);
             Debug.Log("Random x: " + xRandom + " Random z: " + zRandom);
             if (xRandom <= x - xLocal && zRandom <= z - zLocal && CheckRoom(xRandom, zRandom, room))
@@ -103,7 +108,7 @@ public class RoomGeneration : MonoBehaviour
     /// <param name="room"></param>
     private void OpenDoors(GameObject room)
     {
-        int doorCountToOpen = Randomize(1, room.transform.GetChild(0).childCount/2);
+        int doorCountToOpen = Randomize(1, room.transform.GetChild(0).childCount/2+ 1) ;
         int counter = 0;
         while (counter < doorCountToOpen)
         {

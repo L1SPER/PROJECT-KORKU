@@ -10,6 +10,8 @@ public class Room : MonoBehaviour
     [SerializeField] Door[] doors;
     [SerializeField] Transform parentTransform;
     [SerializeField] Vector3[] doorPositions;
+    [SerializeField] public Vector3 size;
+
     //[SerializeField] Vector3[] quaternion;
 
     void Awake()
