@@ -41,7 +41,5 @@ public class Room : MonoBehaviour
             doors[i].isOpen = false;
             doors[i].isIntersect = false;
         }
-         
     }
-  
 }

@@ -21,16 +21,23 @@ public class RoomGeneration : MonoBehaviour
     [SerializeField] bool rooms3x3Active;
     [SerializeField] bool rooms3x4Active;
 
-    List<GameObject> rooms = new List<GameObject>();
+    List<Point> roomsPos = new List<Point>();
     /// <summary>
     /// X ve z değeri grid boyutunu belirler.
     /// </summary>
     int x, z;
     int nodeDiameter;
     Grid grid;
+    DelaunayTriangulation delaunayTriangulation;
+
+    Graph graph;
+    MST mst;
     void Awake()
     {
         grid = FindFirstObjectByType<Grid>();
+        delaunayTriangulation = FindFirstObjectByType<DelaunayTriangulation>();
+        graph = new Graph();
+        mst=new MST();
     }
     void Start()
     {
@@ -51,6 +58,8 @@ public class RoomGeneration : MonoBehaviour
         CreateRoom(rooms2x3, rooms2x3.Length, rooms2x3Active);
         CreateRoom(rooms3x3, rooms3x3.Length, rooms3x3Active);
         CreateRoom(rooms3x4, rooms3x4.Length, rooms3x4Active);
+
+        DrawMST.DrawEdges(mst.GetMST(graph.ConvertTriangulationToGraph(delaunayTriangulation.GenerateTriangulation(roomsPos))));    
     }
     /// <summary>
     /// Oda oluşturur.
@@ -67,6 +76,7 @@ public class RoomGeneration : MonoBehaviour
                 Vector3 randomPos = GetRandom(room[i]);
                 Debug.Log("Random Pos: " + randomPos);
                 GameObject roomTemp = Instantiate(room[i], new Vector3(randomPos.x, 0, randomPos.z), Quaternion.identity);
+                roomsPos.Add(new Point((int)randomPos.x, (int)randomPos.z));
                 OpenDoors(roomTemp);
                 roomTemp.transform.SetParent(parentTransform);
             }
