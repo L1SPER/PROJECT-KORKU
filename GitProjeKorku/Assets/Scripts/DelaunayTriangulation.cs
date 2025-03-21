@@ -3,16 +3,23 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
+
+/// <summary>
+/// Nokta yapısı
+/// </summary>
 [System.Serializable]
 public class Point
 {
-    public float x, y;
-    public Point(float x, float y)
+    public float x, z;
+    public Point(float x, float z)
     {
         this.x = x;
-        this.y = y;
+        this.z = z;
     }
 }
+/// <summary>
+/// Üçgen yapısı
+/// </summary>
 [System.Serializable]
 public class Triangle
 {
@@ -29,9 +36,9 @@ public class Triangle
     public float GetCircumradius()
     {
         // Basit bir yöntemle üçgenin çevresel yarıçapını hesapla
-        float ax = p1.x, ay = p1.y;
-        float bx = p2.x, by = p2.y;
-        float cx = p3.x, cy = p3.y;
+        float ax = p1.x, ay = p1.z;
+        float bx = p2.x, by = p2.z;
+        float cx = p3.x, cy = p3.z;
 
         float d = 2 * (ax * (by - cy) + bx * (cy - ay) + cx * (ay - by));
         float ux = ((ax * ax + ay * ay) * (by - cy) + (bx * bx + by * by) * (cy - ay) + (cx * cx + cy * cy) * (ay - by)) / d;
@@ -46,18 +53,25 @@ public class Triangle
     {
         // Bu basit bir içerik kontrolü değil, sadece üçgenin çevresel sınırını kullanarak
         float radius = GetCircumradius();
-        float dist = Mathf.Sqrt((p.x - p1.x) * (p.x - p1.x) + (p.y - p1.y) * (p.y - p1.y));
+        float dist = Mathf.Sqrt((p.x - p1.x) * (p.x - p1.x) + (p.z - p1.z) * (p.z - p1.z));
         return dist <= radius;
     }
 }
+/// <summary>
+/// Delaunay Triangulation sınıfı
+/// </summary>
 public class DelaunayTriangulation : MonoBehaviour
 {
     [SerializeField] Point[] superTrianglePoints;
-    // Delaunay Triangulation'ı başlatmak için kullanılacak metod
+    // Delaunay Triangulation hesaplama
     public List<Triangle> GenerateTriangulation(List<Point> points)
     {
         List<Triangle> triangles = new List<Triangle>();
 
+        if (superTrianglePoints == null || superTrianglePoints.Length != 3)
+        {
+            Debug.LogError("SuperTrianglePoints dizisi hatalı! Lütfen üç nokta sağlayın.");
+        }
         // 1. Başlangıçta büyük bir dış üçgen oluştur
         // Bu dış üçgen harita sınırlarını kapsayacak şekilde seçilir
         Point p1 = superTrianglePoints[0];
@@ -80,7 +94,6 @@ public class DelaunayTriangulation : MonoBehaviour
                     badTriangles.Add(triangle);
                 }
             }
-
             // 4. Kötü üçgenlerden yeni üçgenler oluştur
             foreach (Triangle badTriangle in badTriangles)
             {
@@ -96,30 +109,9 @@ public class DelaunayTriangulation : MonoBehaviour
             triangles.RemoveAll(t => badTriangles.Contains(t));
         }
         // Delaunay Triangulation tamamlandıktan sonra büyük üçgene bağlı üçgenleri temizle
-        triangles = triangles.Where(t => !(t.p1 == p1||t.p1 == p2||  t.p1 == p3 ||
-                                   t.p2 == p1 || t.p2 == p2||  t.p2 == p3 ||
+        triangles = triangles.Where(t => !(t.p1 == p1 || t.p1 == p2 || t.p1 == p3 ||
+                                   t.p2 == p1 || t.p2 == p2 || t.p2 == p3 ||
                                    t.p3 == p1 || t.p3 == p2 || t.p3 == p3)).ToList();
         return triangles;
     }
-
-    // Örnek kullanım
-    /* void Start()
-    {
-        List<Point> points = new List<Point>
-        {
-            new Point(10, 20),
-            new Point(30, 40),
-            new Point(50, 60),
-            new Point(70, 80),
-            new Point(90, 100)
-        };
-
-        List<Triangle> triangulation = GenerateTriangulation(points);
-
-        // Triangulasyonu çizme işlemi
-        foreach (var triangle in triangulation)
-        {
-            Debug.Log("Triangle: " + triangle.p1.x + ", " + triangle.p1.y + " -> " + triangle.p2.x + ", " + triangle.p2.y + " -> " + triangle.p3.x + ", " + triangle.p3.y);
-        }
-    } */
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Grid : MonoBehaviour
@@ -15,10 +16,11 @@ public class Grid : MonoBehaviour
 
     public float nodeDiameter;
     public int gridSizeX, gridSizeY;
-    Vector3 bottomLeft;
+    [SerializeField] Vector3 bottomLeft;
 
     [SerializeField] int x, y;
     [SerializeField] private float offset;
+    int counter = 0;
     void Start()
     {
         nodeDiameter = nodeRadius * 2;
@@ -26,8 +28,10 @@ public class Grid : MonoBehaviour
         gridSizeY = Mathf.RoundToInt(gridWorldSize.y / nodeDiameter);
         CreateGrid();
         CreateFloor();
-        FindStartNode();
+        CheckGrid();
+        //FindStartNode();
     }
+
     /// <summary>
     /// Başlangıç noktası bulunur.
     /// </summary>
@@ -39,14 +43,30 @@ public class Grid : MonoBehaviour
     void Update()
     {
         UpdateFloor();
+        //CheckGrid();
     }
+    private void CheckGrid()
+    {
+        for(int i=0; i<gridSizeX; i++)
+        {
+            for(int j=0; j<gridSizeY; j++)
+            {
+                if(grid[i,j]==null)
+                {
+                    Debug.Log("counter"+counter);
+                    counter++;
+                }
+            }
+        }
+    }
+
     /// <summary>
     /// Grid oluşturulur.
     /// </summary>
     private void CreateGrid()
     {
         grid = new Node[gridSizeX, gridSizeY];
-        bottomLeft = transform.position - Vector3.right * gridWorldSize.x / 2 - Vector3.forward * gridWorldSize.y / 2;
+        //bottomLeft = transform.position - Vector3.right * gridWorldSize.x / 2 - Vector3.forward * gridWorldSize.y / 2;
         Debug.Log("En sol alt kose: " + bottomLeft);
 
         for (int x = 0; x < gridSizeX; x++)
@@ -55,7 +75,16 @@ public class Grid : MonoBehaviour
             {
                 Vector3 worldPoint = bottomLeft + Vector3.right * (x * nodeDiameter + nodeRadius) + Vector3.forward * (y * nodeDiameter + nodeRadius);
                 bool walkable = !Physics.CheckSphere(worldPoint, nodeRadius, unwalkableMask);
-                grid[x, y] = new Node(walkable, worldPoint, x, y);
+                //grid[x, y] = new Node(walkable, worldPoint, x, y, FloorType.White);
+                if(walkable)
+                {
+                    grid[x, y] = new Node(walkable, worldPoint, x, y, FloorType.White);
+                }
+                else
+                {
+                    grid[x, y] = new Node(walkable, worldPoint, x, y, FloorType.Red);
+                }
+                //grid[x, y] = new Node(walkable, worldPoint, x, y, FloorType.White);
             }
         }
     }
@@ -65,7 +94,7 @@ public class Grid : MonoBehaviour
     private void CreateFloor()
     {
         gridFloor = new Node[gridSizeX, gridSizeY];
-        bottomLeft = transform.position - Vector3.right * gridWorldSize.x / 2 - Vector3.forward * gridWorldSize.y / 2;
+        //bottomLeft = transform.position - Vector3.right * gridWorldSize.x / 2 - Vector3.forward * gridWorldSize.y / 2;
         Debug.Log("En sol alt kose: " + bottomLeft);
 
         for (int x = 0; x < gridSizeX; x++)
@@ -77,13 +106,13 @@ public class Grid : MonoBehaviour
                 if (walkable)
                 {
                     GameObject floor = Instantiate(whiteFloor, worldPoint, Quaternion.identity);
-                    gridFloor[x, y] = new Node(floor, walkable, worldPoint, x, y);
+                    gridFloor[x, y] = new Node(floor, walkable, worldPoint, x, y, FloorType.White);
                     floor.transform.SetParent(parentFloorTransform);
                 }
                 else
                 {
                     GameObject floor = Instantiate(redFloor, worldPoint, Quaternion.identity);
-                    gridFloor[x, y] = new Node(floor, walkable, worldPoint, x, y);
+                    gridFloor[x, y] = new Node(floor, walkable, worldPoint, x, y, FloorType.Red);
                     floor.transform.SetParent(parentFloorTransform);
                 }
             }
@@ -94,22 +123,27 @@ public class Grid : MonoBehaviour
     /// </summary>
     private void UpdateFloor()
     {
-        bottomLeft = transform.position - Vector3.right * gridWorldSize.x / 2 - Vector3.forward * gridWorldSize.y / 2;
+        //bottomLeft = transform.position - Vector3.right * gridWorldSize.x / 2 - Vector3.forward * gridWorldSize.y / 2;
         Debug.Log("En sol alt kose: " + bottomLeft);
 
         for (int x = 0; x < gridSizeX; x++)
         {
             for (int y = 0; y < gridSizeY; y++)
             {
-                Vector3 worldPoint = bottomLeft + Vector3.right * (x * nodeDiameter + nodeRadius) + Vector3.forward * (y * nodeDiameter + nodeRadius);
-                bool walkable = !Physics.CheckSphere(worldPoint, nodeRadius-offset, unwalkableMask);
-                if (walkable)
+                /* Vector3 worldPoint = bottomLeft + Vector3.right * (x * nodeDiameter + nodeRadius) + Vector3.forward * (y * nodeDiameter + nodeRadius);
+                bool walkable = !Physics.CheckSphere(worldPoint, nodeRadius, unwalkableMask); */
+                gridFloor[x, y]=new Node(gridFloor[x, y].floor, grid[x, y].walkable, grid[x, y].worldPosition, x, y, grid[x, y].floorType);
+                if(gridFloor[x, y].floorType==FloorType.Red)
+                {
+                    gridFloor[x, y].floor.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = Color.red;
+                }
+                else if(gridFloor[x, y].floorType==FloorType.White)
                 {
                     gridFloor[x, y].floor.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = Color.white;
                 }
-                else
+                else if(gridFloor[x, y].floorType==FloorType.Yellow)
                 {
-                    gridFloor[x, y].floor.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = Color.red;
+                    gridFloor[x, y].floor.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = Color.yellow;
                 }
             }
         }
@@ -123,6 +157,12 @@ public class Grid : MonoBehaviour
     public Vector3 CalculateWorldPoint(int xRandom, int zRandom)
     {
         return bottomLeft + Vector3.right * (xRandom * nodeDiameter + nodeRadius) + Vector3.forward * (zRandom * nodeDiameter + nodeRadius);
+    }
+    public Node NodeFromWorldPoint(Vector3 worldPosition)
+    {
+        int x= (int) (worldPosition.x - bottomLeft.x) / (int) nodeDiameter;
+        int y= (int) (worldPosition.z - bottomLeft.z) / (int) nodeDiameter;
+        return grid[x, y]; 
     }
     /// <summary>
     /// Oda uygun mu kontrol edilir.
@@ -165,9 +205,37 @@ public class Grid : MonoBehaviour
             {
                 grid[xRandom + i, zRandom + j].walkable = false;
                 gridFloor[xRandom + i, zRandom + j].walkable=false;
+                grid[xRandom + i, zRandom + j].floorType=FloorType.Red;
+                gridFloor[xRandom + i, zRandom + j].floorType=FloorType.Red;
             }
         }
     }
+    public List<Node> GetNeighbors(Node node)
+    {
+        List<Node> neighbors = new List<Node>();
+
+        int[,] directions = new int[,]
+        {
+            { 0, 1 },  // Yukarı
+            { 0, -1 }, // Aşağı
+            { -1, 0 }, // Sol
+            { 1, 0 }   // Sağ
+        };
+
+        for (int i = 0; i < directions.GetLength(0); i++)
+        {
+            int checkX = node.gridX + directions[i, 0];
+            int checkY = node.gridY + directions[i, 1];
+
+            if (checkX >= 0 && checkX < gridSizeX && checkY >= 0 && checkY < gridSizeY)
+            {
+                neighbors.Add(grid[checkX, checkY]);
+            }
+        }
+
+        return neighbors;
+    }
+
     /* void OnDrawGizmos()
     {
         if (grid != null)

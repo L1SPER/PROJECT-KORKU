@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Net.NetworkInformation;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -27,17 +28,22 @@ public class RoomGeneration : MonoBehaviour
     /// </summary>
     int x, z;
     int nodeDiameter;
+
+    [SerializeField] private int extraEdgeCount;
     Grid grid;
     DelaunayTriangulation delaunayTriangulation;
-
     Graph graph;
     MST mst;
+    DrawMST drawMST;
+    Pathfinding pathfinding;
     void Awake()
     {
         grid = FindFirstObjectByType<Grid>();
         delaunayTriangulation = FindFirstObjectByType<DelaunayTriangulation>();
         graph = new Graph();
-        mst=new MST();
+        mst=FindFirstObjectByType<MST>();
+        drawMST=FindFirstObjectByType<DrawMST>();
+        pathfinding = FindFirstObjectByType<Pathfinding>();
     }
     void Start()
     {
@@ -45,6 +51,7 @@ public class RoomGeneration : MonoBehaviour
         z = grid.gridSizeY;
         nodeDiameter = (int)grid.nodeDiameter;
         CreateRooms();
+        PathFunctions();
     }
     /// <summary>
     /// Odaları oluşturur.
@@ -58,9 +65,46 @@ public class RoomGeneration : MonoBehaviour
         CreateRoom(rooms2x3, rooms2x3.Length, rooms2x3Active);
         CreateRoom(rooms3x3, rooms3x3.Length, rooms3x3Active);
         CreateRoom(rooms3x4, rooms3x4.Length, rooms3x4Active);
-
-        DrawMST.DrawEdges(mst.GetMST(graph.ConvertTriangulationToGraph(delaunayTriangulation.GenerateTriangulation(roomsPos))));    
     }
+    /// <summary>
+    /// Üçgen oluşturma ve yol bulma işlemleri yapılır.
+    /// </summary>
+    private void PathFunctions()
+    {
+        Debug.Log("CreateRooms() başladı.");
+
+        var triangles = delaunayTriangulation.GenerateTriangulation(roomsPos);
+        if (triangles == null || triangles.Count == 0)
+        {
+            Debug.LogError("Delaunay Triangulation başarısız! Triangles listesi boş.");
+        }
+
+        graph = graph.ConvertTriangulationToGraph(triangles);
+        if (graph == null)
+        {
+            Debug.LogError("ConvertTriangulationToGraph başarısız! Graph null döndü.");
+        }
+        if (graph.nodes == null || graph.nodes.Count == 0)
+        {
+            Debug.LogError("Graph oluşturuldu ama içi boş!");
+        }
+
+        Debug.Log($"Graph başarıyla oluşturuldu! {graph.nodes.Count} düğüm var.");
+
+        var mstEdges = mst.GetMST(graph);
+        mst.DrawExtraEdges(extraEdgeCount);
+        if (mstEdges == null || mstEdges.Count == 0)
+        {
+            Debug.LogError("MST oluşturuldu ama içi boş!");
+        }
+        if (drawMST == null)
+        {
+            Debug.LogError("DrawMST is null!");
+        }
+        drawMST.DrawEdges(mstEdges);
+        pathfinding.FindPathBetweenTwoPoint(mstEdges);
+    }
+
     /// <summary>
     /// Oda oluşturur.
     /// </summary>

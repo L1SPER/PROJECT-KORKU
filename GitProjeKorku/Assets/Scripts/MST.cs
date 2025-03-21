@@ -1,14 +1,23 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-
-public class MST
+public class MST : MonoBehaviour
 {
+    List<Edge> mstEdges = new List<Edge>();
+    HashSet<GraphNode> visited = new HashSet<GraphNode>();
+    List<Edge> availableEdges = new List<Edge>();
+    /// <summary>
+    /// Minimum Spanning Tree (MST) Algoritması
+    /// </summary>
+    /// <param name="graph"></param>
+    /// <returns></returns>
     public List<Edge> GetMST(Graph graph)
     {
-        List<Edge> mstEdges = new List<Edge>();
-        HashSet<GraphNode> visited = new HashSet<GraphNode>();
-        List<Edge> availableEdges = new List<Edge>();
+        if (graph == null || graph.nodes == null || graph.nodes.Count == 0)
+        {
+            Debug.LogError("Graph is empty or not initialized!");
+            return null;
+        }
 
         // Rastgele bir düğümden başla
         GraphNode startNode = graph.nodes[0];
@@ -32,7 +41,18 @@ public class MST
             // Yeni düğümün kenarlarını ekle
             availableEdges.AddRange(newNode.edges);
         }
-
         return mstEdges;
+    }
+    /// <summary>
+    /// MST'ye count değeri ekstra kenarlar çizme
+    /// </summary>
+    /// <param name="count"></param>
+    public void DrawExtraEdges(int count)
+    {
+        for (int i = 0; i < count; i++)
+        {
+            int randomIndex = Random.Range(0, availableEdges.Count);
+            mstEdges.Add(availableEdges[randomIndex]);
+        }
     }
 }

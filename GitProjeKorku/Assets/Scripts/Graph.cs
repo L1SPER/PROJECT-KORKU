@@ -1,20 +1,24 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Düğüm yapısı
+/// </summary>
 public class GraphNode
 {
     public int id;
-    public float x, y;
+    public Point point;
     public List<Edge> edges = new List<Edge>();
 
-    public GraphNode(int id, float x, float y)
+    public GraphNode(int _id, Point _point)
     {
-        this.id = id;
-        this.x = x;
-        this.y = y;
+        this.id=_id;
+        this.point = _point;
     }
 }
-
+/// <summary>
+/// Kenar yapısı
+/// </summary>
 public class Edge
 {
     public GraphNode nodeA, nodeB;
@@ -27,57 +31,25 @@ public class Edge
         this.weight = weight;
     }
 }
-public class Graph
+/// <summary>
+/// Kenar ve düğümlerden oluşan graf yapısı
+/// </summary>
+public class Graph 
 {
     public List<GraphNode> nodes = new List<GraphNode>();
     public List<Edge> edges = new List<Edge>();
-
+    
+    // Kenar ekleme
     public void AddEdge(GraphNode a, GraphNode b)
     {
-        float weight = Vector2.Distance(new Vector2(a.x, a.y), new Vector2(b.x, b.y));
+        float weight = Vector2.Distance(new Vector2(a.point.x, a.point.z), new Vector2(b.point.x, b.point.z));
         Edge edge = new Edge(a, b, weight);
         edges.Add(edge);
 
         a.edges.Add(edge);
         b.edges.Add(edge);
     }
-
-    /* // Delaunay Üçgenlerinden MST Grafiği Üretme
-    public Graph ConvertTriangulationToGraph(List<Triangle> triangles)
-    {
-        Graph graph = new Graph();
-        Dictionary<Vector2, GraphNode> nodeMap = new Dictionary<Vector2, GraphNode>();
-
-        foreach (var triangle in triangles)
-        {
-            Vector2[] points = {
-            new Vector2(triangle.p1.x, triangle.p1.y),
-            new Vector2(triangle.p2.x, triangle.p2.y),
-            new Vector2(triangle.p3.x, triangle.p3.y)
-        };
-
-            GraphNode[] nodes = new GraphNode[3];
-
-            for (int i = 0; i < 3; i++)
-            {
-
-                if (!nodeMap.ContainsKey(points[i]))
-                {
-                    GraphNode newNode = new GraphNode(nodeMap.Count, points[i].x, points[i].y);
-                    nodeMap[points[i]] = newNode;
-                    graph.nodes.Add(newNode);
-                }
-                nodes[i] = nodeMap[points[i]];
-            }
-
-            // Kenarları ekle
-            graph.AddEdge(nodes[0], nodes[1]);
-            graph.AddEdge(nodes[1], nodes[2]);
-            graph.AddEdge(nodes[2], nodes[0]);
-        }
-
-        return graph;
-    } */
+   
     // Delaunay Üçgenlerinden MST Grafiği Üretme
     public Graph ConvertTriangulationToGraph(List<Triangle> triangles)
     {
@@ -92,9 +64,9 @@ public class Graph
         foreach (var triangle in triangles)
         {
             Vector2[] points = {
-                new Vector2(triangle.p1.x, triangle.p1.y),
-                new Vector2(triangle.p2.x, triangle.p2.y),
-                new Vector2(triangle.p3.x, triangle.p3.y)
+                new Vector2(triangle.p1.x, triangle.p1.z),
+                new Vector2(triangle.p2.x, triangle.p2.z),
+                new Vector2(triangle.p3.x, triangle.p3.z)
             };
 
             GraphNode[] nodes = new GraphNode[3];
@@ -108,13 +80,12 @@ public class Graph
                 // Yeni düğüm ekleme
                 if (!nodeMap.ContainsKey(points[i]))
                 {
-                    GraphNode newNode = new GraphNode(nodeMap.Count, points[i].x, points[i].y);
+                    GraphNode newNode = new GraphNode(nodeMap.Count, new Point(points[i].x, points[i].y));
                     nodeMap[points[i]] = newNode;
                     graph.nodes.Add(newNode);
                 }
                 nodes[i] = nodeMap[points[i]];
             }
-
             // Eğer geçerli üçgenin tüm noktaları mevcutsa, kenarları ekle
             if (nodes[0] != null && nodes[1] != null) graph.AddEdge(nodes[0], nodes[1]);
             if (nodes[1] != null && nodes[2] != null) graph.AddEdge(nodes[1], nodes[2]);
