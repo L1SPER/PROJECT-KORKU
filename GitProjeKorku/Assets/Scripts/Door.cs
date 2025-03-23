@@ -6,7 +6,7 @@ public class Door : MonoBehaviour
     [SerializeField] public bool isOpen;
     [SerializeField] public bool isIntersect;
 
-      void OnTriggerEnter(Collider other)
+    void OnTriggerEnter(Collider other)
     {
         if(other.CompareTag("Door"))
         {

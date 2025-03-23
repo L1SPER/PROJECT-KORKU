@@ -5,7 +5,6 @@ using UnityEngine;
 public class Grid : MonoBehaviour
 {
     [SerializeField] Transform parentFloorTransform;
-    [SerializeField] GameObject redFloor;
     [SerializeField] GameObject whiteFloor;
 
     [SerializeField] private LayerMask unwalkableMask;
@@ -28,36 +27,11 @@ public class Grid : MonoBehaviour
         gridSizeY = Mathf.RoundToInt(gridWorldSize.y / nodeDiameter);
         CreateGrid();
         CreateFloor();
-        CheckGrid();
-        //FindStartNode();
-    }
-
-    /// <summary>
-    /// Başlangıç noktası bulunur.
-    /// </summary>
-    private void FindStartNode()
-    {
-        gridFloor[x, y].floor.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = Color.red;
     }
 
     void Update()
     {
         UpdateFloor();
-        //CheckGrid();
-    }
-    private void CheckGrid()
-    {
-        for(int i=0; i<gridSizeX; i++)
-        {
-            for(int j=0; j<gridSizeY; j++)
-            {
-                if(grid[i,j]==null)
-                {
-                    Debug.Log("counter"+counter);
-                    counter++;
-                }
-            }
-        }
     }
 
     /// <summary>
@@ -66,25 +40,12 @@ public class Grid : MonoBehaviour
     private void CreateGrid()
     {
         grid = new Node[gridSizeX, gridSizeY];
-        //bottomLeft = transform.position - Vector3.right * gridWorldSize.x / 2 - Vector3.forward * gridWorldSize.y / 2;
-        Debug.Log("En sol alt kose: " + bottomLeft);
-
         for (int x = 0; x < gridSizeX; x++)
         {
             for (int y = 0; y < gridSizeY; y++)
             {
                 Vector3 worldPoint = bottomLeft + Vector3.right * (x * nodeDiameter + nodeRadius) + Vector3.forward * (y * nodeDiameter + nodeRadius);
-                bool walkable = !Physics.CheckSphere(worldPoint, nodeRadius, unwalkableMask);
-                //grid[x, y] = new Node(walkable, worldPoint, x, y, FloorType.White);
-                if(walkable)
-                {
-                    grid[x, y] = new Node(walkable, worldPoint, x, y, FloorType.White);
-                }
-                else
-                {
-                    grid[x, y] = new Node(walkable, worldPoint, x, y, FloorType.Red);
-                }
-                //grid[x, y] = new Node(walkable, worldPoint, x, y, FloorType.White);
+                grid[x, y] = new Node(new Floor(null, FloorType.White), worldPoint, x, y);
             }
         }
     }
@@ -94,27 +55,14 @@ public class Grid : MonoBehaviour
     private void CreateFloor()
     {
         gridFloor = new Node[gridSizeX, gridSizeY];
-        //bottomLeft = transform.position - Vector3.right * gridWorldSize.x / 2 - Vector3.forward * gridWorldSize.y / 2;
-        Debug.Log("En sol alt kose: " + bottomLeft);
-
         for (int x = 0; x < gridSizeX; x++)
         {
             for (int y = 0; y < gridSizeY; y++)
             {
                 Vector3 worldPoint = bottomLeft + Vector3.right * (x * nodeDiameter + nodeRadius) + Vector3.forward * (y * nodeDiameter + nodeRadius);
-                bool walkable = !Physics.CheckSphere(worldPoint, nodeRadius, unwalkableMask);
-                if (walkable)
-                {
-                    GameObject floor = Instantiate(whiteFloor, worldPoint, Quaternion.identity);
-                    gridFloor[x, y] = new Node(floor, walkable, worldPoint, x, y, FloorType.White);
-                    floor.transform.SetParent(parentFloorTransform);
-                }
-                else
-                {
-                    GameObject floor = Instantiate(redFloor, worldPoint, Quaternion.identity);
-                    gridFloor[x, y] = new Node(floor, walkable, worldPoint, x, y, FloorType.Red);
-                    floor.transform.SetParent(parentFloorTransform);
-                }
+                GameObject _floor = Instantiate(whiteFloor, worldPoint, Quaternion.identity);
+                gridFloor[x, y] = new Node(worldPoint, x, y, _floor, FloorType.White);
+                _floor.transform.SetParent(parentFloorTransform);
             }
         }
     }
@@ -123,27 +71,22 @@ public class Grid : MonoBehaviour
     /// </summary>
     private void UpdateFloor()
     {
-        //bottomLeft = transform.position - Vector3.right * gridWorldSize.x / 2 - Vector3.forward * gridWorldSize.y / 2;
-        Debug.Log("En sol alt kose: " + bottomLeft);
-
         for (int x = 0; x < gridSizeX; x++)
         {
             for (int y = 0; y < gridSizeY; y++)
             {
-                /* Vector3 worldPoint = bottomLeft + Vector3.right * (x * nodeDiameter + nodeRadius) + Vector3.forward * (y * nodeDiameter + nodeRadius);
-                bool walkable = !Physics.CheckSphere(worldPoint, nodeRadius, unwalkableMask); */
-                gridFloor[x, y]=new Node(gridFloor[x, y].floor, grid[x, y].walkable, grid[x, y].worldPosition, x, y, grid[x, y].floorType);
-                if(gridFloor[x, y].floorType==FloorType.Red)
+                gridFloor[x, y] = new Node(grid[x, y].worldPosition, x, y, gridFloor[x, y].floor.floorGameObject, grid[x, y].floor.floorType);
+                if (gridFloor[x, y].floor.floorType == FloorType.Red)
                 {
-                    gridFloor[x, y].floor.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = Color.red;
+                    gridFloor[x, y].floor.floorGameObject.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = Color.red;
                 }
-                else if(gridFloor[x, y].floorType==FloorType.White)
+                else if (gridFloor[x, y].floor.floorType == FloorType.White)
                 {
-                    gridFloor[x, y].floor.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = Color.white;
+                    gridFloor[x, y].floor.floorGameObject.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = Color.white;
                 }
-                else if(gridFloor[x, y].floorType==FloorType.Yellow)
+                else if (gridFloor[x, y].floor.floorType == FloorType.Yellow)
                 {
-                    gridFloor[x, y].floor.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = Color.yellow;
+                    gridFloor[x, y].floor.floorGameObject.transform.GetChild(0).GetComponent<MeshRenderer>().material.color = Color.yellow;
                 }
             }
         }
@@ -160,9 +103,9 @@ public class Grid : MonoBehaviour
     }
     public Node NodeFromWorldPoint(Vector3 worldPosition)
     {
-        int x= (int) (worldPosition.x - bottomLeft.x) / (int) nodeDiameter;
-        int y= (int) (worldPosition.z - bottomLeft.z) / (int) nodeDiameter;
-        return grid[x, y]; 
+        int x = (int)(worldPosition.x - bottomLeft.x) / (int)nodeDiameter;
+        int y = (int)(worldPosition.z - bottomLeft.z) / (int)nodeDiameter;
+        return grid[x, y];
     }
     /// <summary>
     /// Oda uygun mu kontrol edilir.
@@ -173,14 +116,14 @@ public class Grid : MonoBehaviour
     /// <returns></returns>
     public bool CheckIfRoomFits(int xRandom, int zRandom, GameObject room)
     {
-        int xLocal = (int) (room.transform.GetChild(0).GetComponent<Room>().size.x /nodeDiameter);
-        int zLocal = (int) (room.transform.GetChild(0).GetComponent<Room>().size.z /nodeDiameter);
+        int xLocal = (int)(room.transform.GetChild(0).GetComponent<Room>().size.x / nodeDiameter);
+        int zLocal = (int)(room.transform.GetChild(0).GetComponent<Room>().size.z / nodeDiameter);
 
         for (int i = 0; i < xLocal; i++)
         {
             for (int j = 0; j < zLocal; j++)
             {
-                if (grid[xRandom + i, zRandom + j].walkable == false)
+                if (grid[xRandom + i, zRandom + j].floor.floorType == FloorType.Red)
                 {
                     return false;
                 }
@@ -196,20 +139,24 @@ public class Grid : MonoBehaviour
     /// <param name="room"></param>
     public void DrawRoom(int xRandom, int zRandom, GameObject room)
     {
-        int xLocal = (int)( room.transform.GetChild(0).GetComponent<Room>().size.x/nodeDiameter);
-        int zLocal = (int)( room.transform.GetChild(0).GetComponent<Room>().size.z/nodeDiameter);
+        int xLocal = (int)(room.transform.GetChild(0).GetComponent<Room>().size.x / nodeDiameter);
+        int zLocal = (int)(room.transform.GetChild(0).GetComponent<Room>().size.z / nodeDiameter);
 
         for (int i = 0; i < xLocal; i++)
         {
             for (int j = 0; j < zLocal; j++)
             {
-                grid[xRandom + i, zRandom + j].walkable = false;
-                gridFloor[xRandom + i, zRandom + j].walkable=false;
-                grid[xRandom + i, zRandom + j].floorType=FloorType.Red;
-                gridFloor[xRandom + i, zRandom + j].floorType=FloorType.Red;
+                grid[xRandom + i, zRandom + j].floor.floorType = FloorType.Red;
+                gridFloor[xRandom + i, zRandom + j].floor.floorType = FloorType.Red;
+                FloorManager.AddRedFloor(grid[xRandom + i, zRandom + j]);
             }
         }
     }
+    /// <summary>
+    /// Komşular bulunur.
+    /// </summary>
+    /// <param name="node"></param>
+    /// <returns></returns>
     public List<Node> GetNeighbors(Node node)
     {
         List<Node> neighbors = new List<Node>();
@@ -232,19 +179,20 @@ public class Grid : MonoBehaviour
                 neighbors.Add(grid[checkX, checkY]);
             }
         }
-
         return neighbors;
     }
-
-    /* void OnDrawGizmos()
+    public Node GetNeighbor(Node node, Vector2 pos)
     {
-        if (grid != null)
-        {
-            foreach (Node n in grid)
-            {
-                Gizmos.color = (n.walkable) ? Color.white : Color.red;
-                Gizmos.DrawCube(n.worldPosition, Vector3.one * (nodeDiameter - .1f));
-            }
-        }
-    } */
+        Vector2 currentPos = new Vector2(node.gridX, node.gridY) + pos;
+        return grid[(int)currentPos.x, (int)currentPos.y];
+    }
+    public FloorType [] GetNeighborColors(Node node)
+    {
+        FloorType [] floorTypes= new FloorType[4];
+        floorTypes[0] = GetNeighbor(node, Vector2.up)!= null ? GetNeighbor(node, Vector2.up).floor.floorType:FloorType.Red;
+        floorTypes[1] = GetNeighbor(node, Vector2.right)!= null ? GetNeighbor(node, Vector2.right).floor.floorType:FloorType.Red;
+        floorTypes[2] = GetNeighbor(node, Vector2.down)!= null ? GetNeighbor(node, Vector2.down).floor.floorType:FloorType.Red;
+        floorTypes[3] = GetNeighbor(node, Vector2.left)!= null ? GetNeighbor(node, Vector2.left).floor.floorType:FloorType.Red;
+        return floorTypes;
+    }
 }

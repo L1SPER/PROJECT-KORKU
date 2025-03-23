@@ -20,8 +20,8 @@ public class Pathfinding : MonoBehaviour
         Node targetNode = grid.NodeFromWorldPoint(targetPos);
 
         //Başlangıç ve bitiş düğümlerinin FloorType'ını değiştirme (Yoksa A* çalışmaz)
-        startNode.floorType = FloorType.White;
-        targetNode.floorType = FloorType.White;
+        startNode.floor.floorType = FloorType.White;
+        targetNode.floor.floorType = FloorType.White;
 
         if (startNode == null || targetNode == null) //|| !targetNode.walkable
         {
@@ -59,7 +59,7 @@ public class Pathfinding : MonoBehaviour
             // Komşuları kontrol et
             foreach (Node neighbor in grid.GetNeighbors(currentNode))
             {
-                if (neighbor.floorType == FloorType.Red || closedSet.Contains(neighbor))
+                if (neighbor.floor.floorType == FloorType.Red || closedSet.Contains(neighbor))
                 {
                     continue;
                 }
@@ -97,10 +97,10 @@ public class Pathfinding : MonoBehaviour
     {
         List<Node> path = new List<Node>();
         Node currentNode = endNode;
-        Debug.Log("Retrace path start: " + startNode.worldPosition);
-        Debug.Log("Retrace path endNode: " + endNode.worldPosition);
-        startNode.floorType = FloorType.Red;
-        endNode.floorType = FloorType.Red;
+        //Debug.Log("Retrace path start: " + startNode.worldPosition);
+        //Debug.Log("Retrace path endNode: " + endNode.worldPosition);
+        startNode.floor.floorType = FloorType.Red;
+        endNode.floor.floorType = FloorType.Red;
         while (currentNode != startNode)
         {
             if (currentNode.parent == null)
@@ -109,10 +109,11 @@ public class Pathfinding : MonoBehaviour
                 break;
             }
             Debug.Log("Retrace path current: " + currentNode.worldPosition);
-            if (currentNode.floorType != FloorType.Red) 
+            if (currentNode.floor.floorType != FloorType.Red) 
             {
                 path.Add(currentNode);
-                currentNode.floorType = FloorType.Yellow;
+                currentNode.floor.floorType = FloorType.Yellow;
+                FloorManager.AddYellowFloor(currentNode);
             }
             currentNode = currentNode.parent;
         }

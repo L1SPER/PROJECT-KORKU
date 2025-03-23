@@ -5,6 +5,11 @@ using UnityEngine;
 
 public class RoomGeneration : MonoBehaviour
 {
+    [Header("StartRoom")]	
+    [SerializeField] GameObject startRoom;
+    [SerializeField] Vector3 startRoomPos;
+    [SerializeField] bool startRoomActive;
+    [Header("Rooms")]	
     [SerializeField] Transform parentTransform;
     [SerializeField] LayerMask unwalkableMask;
     [SerializeField] GameObject[] rooms1x1;
@@ -22,13 +27,11 @@ public class RoomGeneration : MonoBehaviour
     [SerializeField] bool rooms3x3Active;
     [SerializeField] bool rooms3x4Active;
 
-    List<Point> roomsPos = new List<Point>();
-    /// <summary>
-    /// X ve z değeri grid boyutunu belirler.
-    /// </summary>
+    // X ve z değeri grid boyutunu belirler.
     int x, z;
     int nodeDiameter;
 
+    [Header("Pathfinding")]	
     [SerializeField] private int extraEdgeCount;
     Grid grid;
     DelaunayTriangulation delaunayTriangulation;
@@ -36,6 +39,9 @@ public class RoomGeneration : MonoBehaviour
     MST mst;
     DrawMST drawMST;
     Pathfinding pathfinding;
+
+    List<Point> roomsPos = new List<Point>();
+
     void Awake()
     {
         grid = FindFirstObjectByType<Grid>();
@@ -52,12 +58,14 @@ public class RoomGeneration : MonoBehaviour
         nodeDiameter = (int)grid.nodeDiameter;
         CreateRooms();
         PathFunctions();
+       
     }
     /// <summary>
     /// Odaları oluşturur.
     /// </summary>
     private void CreateRooms()
     {
+        CreateRoom(startRoom,startRoomActive);
         CreateRoom(rooms1x1, rooms1x1.Length, rooms1x1Active);
         CreateRoom(rooms1x2, rooms1x2.Length, rooms1x2Active);
         CreateRoom(rooms1x3, rooms1x3.Length, rooms1x3Active);
@@ -104,7 +112,18 @@ public class RoomGeneration : MonoBehaviour
         drawMST.DrawEdges(mstEdges);
         pathfinding.FindPathBetweenTwoPoint(mstEdges);
     }
-
+    private void CreateRoom(GameObject room, bool isActive)
+    {
+         if (isActive)
+        {
+            Vector3 startRoomWorldPos= grid.CalculateWorldPoint((int)startRoomPos.x, (int)startRoomPos.z);
+            GameObject startRoomTemp = Instantiate(room, startRoomWorldPos, Quaternion.identity);
+            DrawRoom((int)startRoomPos.x, (int)startRoomPos.z, room);
+            roomsPos.Add(new Point(startRoomWorldPos.x, startRoomWorldPos.z));
+            OpenDoors(startRoomTemp);
+            startRoomTemp.transform.SetParent(parentTransform);
+        }
+    }
     /// <summary>
     /// Oda oluşturur.
     /// </summary>
@@ -138,13 +157,13 @@ public class RoomGeneration : MonoBehaviour
 
         while (attempts < maxAttempts)
         {
-            int xLocal = (int) room.transform.GetChild(0).GetComponent<Room>().size.x /nodeDiameter;
+            int xLocal = (int) room.transform.GetChild(0).GetComponent<Room>().size.x / nodeDiameter;
             int zLocal = (int)room.transform.GetChild(0).GetComponent<Room>().size.z / nodeDiameter;
 
-            int xRandom = Randomize(1, x -1);
-            int zRandom = Randomize(1, z - 1);
+            int xRandom = Randomize(3, x -2);
+            int zRandom = Randomize(3, z - 2);
             Debug.Log("Random x: " + xRandom + " Random z: " + zRandom);
-            if (xRandom <= x - xLocal && zRandom <= z - zLocal && CheckRoom(xRandom, zRandom, room))
+            if (xRandom <= x - xLocal -2 && zRandom <= z - zLocal -2 && CheckRoom(xRandom, zRandom, room))
             {
                 Vector3 randomWorldPos = grid.CalculateWorldPoint(xRandom, zRandom);
                 Debug.Log("Random World Pos: " + randomWorldPos);
