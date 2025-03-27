@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &2629347059447620442
+--- !u!1 &80397785415599901
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,25 +8,25 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 6603454004231628937}
+  - component: {fileID: 1396843067761826098}
   m_Layer: 7
-  m_Name: DoorParentTransform
+  m_Name: Doors
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &6603454004231628937
+--- !u!4 &1396843067761826098
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2629347059447620442}
+  m_GameObject: {fileID: 80397785415599901}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.125, y: 0, z: 0.64875}
-  m_LocalScale: {x: 0.5, y: 1, z: 1.5}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 584974976619787018}
@@ -40,6 +40,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5617744851450714639}
+  - component: {fileID: 2157472571632810906}
   m_Layer: 7
   m_Name: Room2x2
   m_TagString: Untagged
@@ -63,6 +64,34 @@ Transform:
   - {fileID: 584974976619787018}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2157472571632810906
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3871389729899529499}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91ffc7adc39feea45a034f9cccb72e2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  size: {x: 16, y: 4, z: 16}
+  walls:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  RoomId: 0
+  wallCount: 0
+  wallPrefab: {fileID: 0}
+  wallPos: []
+  wallRot: []
+  wallParentTransform: {fileID: 0}
 --- !u!1 &6899396650490227523
 GameObject:
   m_ObjectHideFlags: 0
@@ -75,7 +104,6 @@ GameObject:
   - component: {fileID: 8093856669222301179}
   - component: {fileID: 1653116544454041354}
   - component: {fileID: 9044740381915341066}
-  - component: {fileID: 2638597729303088889}
   m_Layer: 7
   m_Name: 2x2
   m_TagString: Untagged
@@ -96,9 +124,8 @@ Transform:
   m_LocalScale: {x: 16, y: 4, z: 16}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 6603454004231628937}
-  - {fileID: 1351975592595260242}
   - {fileID: 8932496972737958346}
+  - {fileID: 1396843067761826098}
   m_Father: {fileID: 5617744851450714639}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &8093856669222301179
@@ -175,72 +202,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &2638597729303088889
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6899396650490227523}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 91ffc7adc39feea45a034f9cccb72e2e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  doorTriggerPrefab: {fileID: 692625637953609672, guid: 0814fa6a00849cd47a58685db46a1093, type: 3}
-  doorTriggerPrefabParentTransform: {fileID: 1351975592595260242}
-  doorPrefab: {fileID: 5855645683617059504, guid: 6997ff57ba2fa654c933e57e45647173, type: 3}
-  doors:
-  - {fileID: 3191274850780466186, guid: 6997ff57ba2fa654c933e57e45647173, type: 3}
-  - {fileID: 3191274850780466186, guid: 6997ff57ba2fa654c933e57e45647173, type: 3}
-  - {fileID: 3191274850780466186, guid: 6997ff57ba2fa654c933e57e45647173, type: 3}
-  - {fileID: 3191274850780466186, guid: 6997ff57ba2fa654c933e57e45647173, type: 3}
-  - {fileID: 3191274850780466186, guid: 6997ff57ba2fa654c933e57e45647173, type: 3}
-  - {fileID: 3191274850780466186, guid: 6997ff57ba2fa654c933e57e45647173, type: 3}
-  - {fileID: 3191274850780466186, guid: 6997ff57ba2fa654c933e57e45647173, type: 3}
-  - {fileID: 3191274850780466186, guid: 6997ff57ba2fa654c933e57e45647173, type: 3}
-  parentTransform: {fileID: 6603454004231628937}
-  doorPositions:
-  - {x: -4, y: 0, z: -8}
-  - {x: 4, y: 0, z: -8}
-  - {x: 8, y: 0, z: -4}
-  - {x: 8, y: 0, z: 4}
-  - {x: 4, y: 0, z: 8}
-  - {x: -4, y: 0, z: 8}
-  - {x: -8, y: 0, z: 4}
-  - {x: -8, y: 0, z: -4}
-  size: {x: 16, y: 4, z: 16}
---- !u!1 &7665418743424400030
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1351975592595260242}
-  m_Layer: 7
-  m_Name: YellowRoomTriggerTransform
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1351975592595260242
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7665418743424400030}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.125, y: 0, z: 0.64875}
-  m_LocalScale: {x: 0.5, y: 1, z: 1.5}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 584974976619787018}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &5326053749373989278
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -275,7 +236,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1053448596347450972, guid: db519d0134292514e93572dfeaee1497, type: 3}
       propertyPath: m_Name
-      value: 16x16
+      value: 16x16Mesh
       objectReference: {fileID: 0}
     - target: {fileID: 1053448596347450972, guid: db519d0134292514e93572dfeaee1497, type: 3}
       propertyPath: m_IsActive

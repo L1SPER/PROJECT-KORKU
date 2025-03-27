@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 3916496786898037645}
   - component: {fileID: 3743810145914503812}
   - component: {fileID: 1912242628300357142}
-  - component: {fileID: 8390052320972485033}
   m_Layer: 7
   m_Name: 2x3
   m_TagString: Untagged
@@ -33,9 +32,8 @@ Transform:
   m_LocalScale: {x: 16, y: 4, z: 24}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 8064615689676512845}
-  - {fileID: 8143787979407946718}
   - {fileID: 6711043499122143699}
+  - {fileID: 947237151312401100}
   m_Father: {fileID: 964283096862647964}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &3916496786898037645
@@ -112,76 +110,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &8390052320972485033
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 456669090658166754}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 91ffc7adc39feea45a034f9cccb72e2e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  doorTriggerPrefab: {fileID: 692625637953609672, guid: 0814fa6a00849cd47a58685db46a1093, type: 3}
-  doorTriggerPrefabParentTransform: {fileID: 8143787979407946718}
-  doorPrefab: {fileID: 5855645683617059504, guid: 6997ff57ba2fa654c933e57e45647173, type: 3}
-  doors:
-  - {fileID: 3191274850780466186, guid: 6997ff57ba2fa654c933e57e45647173, type: 3}
-  - {fileID: 3191274850780466186, guid: 6997ff57ba2fa654c933e57e45647173, type: 3}
-  - {fileID: 3191274850780466186, guid: 6997ff57ba2fa654c933e57e45647173, type: 3}
-  - {fileID: 3191274850780466186, guid: 6997ff57ba2fa654c933e57e45647173, type: 3}
-  - {fileID: 3191274850780466186, guid: 6997ff57ba2fa654c933e57e45647173, type: 3}
-  - {fileID: 3191274850780466186, guid: 6997ff57ba2fa654c933e57e45647173, type: 3}
-  - {fileID: 3191274850780466186, guid: 6997ff57ba2fa654c933e57e45647173, type: 3}
-  - {fileID: 3191274850780466186, guid: 6997ff57ba2fa654c933e57e45647173, type: 3}
-  - {fileID: 3191274850780466186, guid: 6997ff57ba2fa654c933e57e45647173, type: 3}
-  - {fileID: 3191274850780466186, guid: 6997ff57ba2fa654c933e57e45647173, type: 3}
-  parentTransform: {fileID: 8064615689676512845}
-  doorPositions:
-  - {x: -8, y: 0, z: 0}
-  - {x: 8, y: 0, z: 0}
-  - {x: -4, y: 0, z: -12}
-  - {x: 4, y: 0, z: -12}
-  - {x: -4, y: 0, z: 12}
-  - {x: 4, y: 0, z: 12}
-  - {x: 8, y: 0, z: 8}
-  - {x: -8, y: 0, z: 8}
-  - {x: -8, y: 0, z: -8}
-  - {x: 8, y: 0, z: -8}
-  size: {x: 16, y: 4, z: 24}
---- !u!1 &1598888638219025179
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 8143787979407946718}
-  m_Layer: 7
-  m_Name: YellowRoomTriggerTransform
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &8143787979407946718
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1598888638219025179}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 6009064743613607418}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6361542565088145919
 GameObject:
   m_ObjectHideFlags: 0
@@ -191,6 +119,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 964283096862647964}
+  - component: {fileID: 5761041417229381299}
   m_Layer: 7
   m_Name: Room2x3
   m_TagString: Untagged
@@ -214,7 +143,37 @@ Transform:
   - {fileID: 6009064743613607418}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &8293268480265974895
+--- !u!114 &5761041417229381299
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6361542565088145919}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91ffc7adc39feea45a034f9cccb72e2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  size: {x: 16, y: 4, z: 24}
+  walls:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  RoomId: 0
+  wallCount: 0
+  wallPrefab: {fileID: 0}
+  wallPos: []
+  wallRot: []
+  wallParentTransform: {fileID: 0}
+--- !u!1 &6930997305671616644
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -222,21 +181,21 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 8064615689676512845}
+  - component: {fileID: 947237151312401100}
   m_Layer: 7
-  m_Name: DoorParentTransform
+  m_Name: Doors
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &8064615689676512845
+--- !u!4 &947237151312401100
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8293268480265974895}
+  m_GameObject: {fileID: 6930997305671616644}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -315,7 +274,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4247823233411143122, guid: 6dce3ace782565b4c9ab3520dca1eed1, type: 3}
       propertyPath: m_Name
-      value: 16x24
+      value: 16x24Mesh
       objectReference: {fileID: 0}
     - target: {fileID: 4247823233411143122, guid: 6dce3ace782565b4c9ab3520dca1eed1, type: 3}
       propertyPath: m_IsActive

@@ -30,6 +30,7 @@ public class RoomGeneration : MonoBehaviour
     // X ve z değeri grid boyutunu belirler.
     int x, z;
     int nodeDiameter;
+    int roomId;
 
     [Header("Pathfinding")]	
     [SerializeField] private int extraEdgeCount;
@@ -53,12 +54,12 @@ public class RoomGeneration : MonoBehaviour
     }
     void Start()
     {
+        roomId=1; //1 den baslayarak odalarin idsini verir.
         x = grid.gridSizeX;
         z = grid.gridSizeY;
         nodeDiameter = (int)grid.nodeDiameter;
         CreateRooms();
         PathFunctions();
-       
     }
     /// <summary>
     /// Odaları oluşturur.
@@ -112,15 +113,19 @@ public class RoomGeneration : MonoBehaviour
         drawMST.DrawEdges(mstEdges);
         pathfinding.FindPathBetweenTwoPoint(mstEdges);
     }
+    /// <summary>
+    /// Başlangıç odası oluşturur.
+    /// </summary>
+    /// <param name="room"></param>
+    /// <param name="isActive"></param>
     private void CreateRoom(GameObject room, bool isActive)
     {
          if (isActive)
         {
             Vector3 startRoomWorldPos= grid.CalculateWorldPoint((int)startRoomPos.x, (int)startRoomPos.z);
             GameObject startRoomTemp = Instantiate(room, startRoomWorldPos, Quaternion.identity);
-            DrawRoom((int)startRoomPos.x, (int)startRoomPos.z, room);
+            DrawRoom((int)startRoomPos.x, (int)startRoomPos.z, startRoomTemp);
             roomsPos.Add(new Point(startRoomWorldPos.x, startRoomWorldPos.z));
-            OpenDoors(startRoomTemp);
             startRoomTemp.transform.SetParent(parentTransform);
         }
     }
@@ -136,11 +141,14 @@ public class RoomGeneration : MonoBehaviour
         {
             for (int i = 0; i < length; i++)
             {
-                Vector3 randomPos = GetRandom(room[i]);
-                Debug.Log("Random Pos: " + randomPos);
-                GameObject roomTemp = Instantiate(room[i], new Vector3(randomPos.x, 0, randomPos.z), Quaternion.identity);
-                roomsPos.Add(new Point((int)randomPos.x, (int)randomPos.z));
-                OpenDoors(roomTemp);
+                GameObject roomTemp = Instantiate(room[i]);
+                Vector2 randomGridPos=GetRandom(roomTemp);
+                Vector3 randomWorldPos = grid.CalculateWorldPoint((int)randomGridPos.x,(int)randomGridPos.y);
+                roomTemp.transform.position=new Vector3(randomWorldPos.x, 0, randomWorldPos.z);
+                transform.rotation=Quaternion.identity;
+                DrawRoom((int)randomGridPos.x,(int)randomGridPos.y,roomTemp);
+                //Debug.Log("Random Pos: " + randomWorldPos);
+                roomsPos.Add(new Point((int)randomWorldPos.x, (int)randomWorldPos.z));
                 roomTemp.transform.SetParent(parentTransform);
             }
         }
@@ -157,42 +165,24 @@ public class RoomGeneration : MonoBehaviour
 
         while (attempts < maxAttempts)
         {
-            int xLocal = (int) room.transform.GetChild(0).GetComponent<Room>().size.x / nodeDiameter;
-            int zLocal = (int)room.transform.GetChild(0).GetComponent<Room>().size.z / nodeDiameter;
+            int xLocal=0,zLocal=0;
+            if(room.TryGetComponent<Room>(out Room roomComp))
+            {
+                xLocal= (int) roomComp.size.x / nodeDiameter;
+                zLocal = (int) roomComp.size.z / nodeDiameter;
+            }
 
             int xRandom = Randomize(3, x -2);
             int zRandom = Randomize(3, z - 2);
-            Debug.Log("Random x: " + xRandom + " Random z: " + zRandom);
+            //Debug.Log("Random x: " + xRandom + " Random z: " + zRandom);
             if (xRandom <= x - xLocal -2 && zRandom <= z - zLocal -2 && CheckRoom(xRandom, zRandom, room))
             {
-                Vector3 randomWorldPos = grid.CalculateWorldPoint(xRandom, zRandom);
-                Debug.Log("Random World Pos: " + randomWorldPos);
-                DrawRoom(xRandom, zRandom, room);
-                return new Vector3(randomWorldPos.x, 0, randomWorldPos.z);
+                return new Vector3(xRandom,zRandom);
             }
             attempts++;
         }
         Debug.LogError("Uygun pozisyon bulunamadı!");
         return Vector3.zero;
-    }
-    /// <summary>
-    /// Odanın kapılarını açar.
-    /// </summary>
-    /// <param name="room"></param>
-    private void OpenDoors(GameObject room)
-    {
-        int doorCountToOpen = Randomize(1, room.transform.GetChild(0).childCount/2+ 1) ;
-        int counter = 0;
-        while (counter < doorCountToOpen)
-        {
-            int randomDoor = Randomize(0, room.transform.GetChild(0).childCount);
-            if (room.transform.GetChild(0).GetChild(randomDoor).gameObject.activeSelf)
-            {
-                counter++;
-                room.transform.GetChild(0).GetChild(0).GetChild(randomDoor).GetComponent<Door>().isOpen = true;
-                room.transform.GetChild(0).GetChild(0).GetChild(randomDoor).GetChild(0).GetComponent<MeshRenderer>().material.color = Color.green;
-            }
-        }
     }
     /// <summary>
     /// Random sayı üretir.
@@ -223,6 +213,8 @@ public class RoomGeneration : MonoBehaviour
     /// <param name="room"></param>
     private void DrawRoom(int xRandom, int zRandom, GameObject room)
     {
-        grid.DrawRoom(xRandom, zRandom, room);
+        room.GetComponent<Room>().RoomId=roomId;
+        grid.DrawRoom(xRandom, zRandom, room, roomId);
+        roomId++;
     }
 }

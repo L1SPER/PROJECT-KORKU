@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Node 
@@ -11,26 +12,65 @@ public class Node
     public int hCost;
     public Node parent;
     public Floor floor;
+
+    public Wall[] walls;
+    public int roomId;
     public Node( Vector3 _worldPost, int _gridX, int _gridY)
     {
-        worldPosition = _worldPost;
-        gridX = _gridX;
-        gridY = _gridY;
-    }
-    public Node(Vector3 _worldPost, int _gridX, int _gridY, GameObject _floor, FloorType _floorType)
-    {
-        worldPosition = _worldPost;
-        gridX = _gridX;
-        gridY = _gridY;
-        floor = new Floor(_floor, _floorType);
+        this.worldPosition = _worldPost;
+        this.gridX = _gridX;
+        this.gridY = _gridY;
     }
     public Node(Floor _floor,Vector3 _worldPost, int _gridX, int _gridY)
     {
-        worldPosition = _worldPost;
-        gridX = _gridX;
-        gridY = _gridY;
-        floor = _floor;
+        this.worldPosition = _worldPost;
+        this.gridX = _gridX;
+        this.gridY = _gridY;
+        this.floor = _floor;
     }
+    public Node(GameObject _floor,FloorType _floorType,Vector3 _worldPost, int _gridX, int _gridY, Wall[] _walls,int _roomId)
+    {
+        this.worldPosition = _worldPost;
+        this.gridX = _gridX;
+        this.gridY = _gridY;
+        this.floor = new Floor(_floor,_floorType);
+        this.roomId= _roomId;
+        // **Doors dizisini oluştur ve kopyala**
+        if (_walls != null)
+        {
+            this.walls = new Wall[_walls.Length]; // Bellek tahsis ediliyor
+            for (int i = 0; i < _walls.Length; i++)
+            {
+                this.walls[i] = _walls[i]; // Kapıları atıyoruz
+            }
+        }
+        else
+        {
+            this.walls = new Wall[0]; // Eğer _doors null ise boş bir dizi oluştur
+        }
+    }
+    public Node(Floor _floor,Vector3 _worldPost, int _gridX, int _gridY, Wall[] _walls,int _roomId)
+    {
+        this.worldPosition = _worldPost;
+        this.gridX = _gridX;
+        this.gridY = _gridY;
+        this.floor = _floor;
+        this.roomId= _roomId;
+        // **Doors dizisini oluştur ve kopyala**
+        if (_walls != null)
+        {
+            this.walls = new Wall[_walls.Length]; // Bellek tahsis ediliyor
+            for (int i = 0; i < _walls.Length; i++)
+            {
+                this.walls[i] = _walls[i]; // Kapıları atıyoruz
+            }
+        }
+        else
+        {
+            this.walls = new Wall[0]; // Eğer _doors null ise boş bir dizi oluştur
+        }
+    }
+    
     public int fCost
     {
         get { return gCost + hCost; }

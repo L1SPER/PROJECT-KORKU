@@ -1,45 +1,42 @@
 using System;
+using System.Collections.Generic;
+using UnityEditor.ShaderGraph.Serialization;
 using UnityEngine;
 
 public class Room : MonoBehaviour
 {
-    [SerializeField] GameObject doorTriggerPrefab;
-    [SerializeField] Transform doorTriggerPrefabParentTransform;
-
-    [SerializeField] GameObject doorPrefab;
-    [SerializeField] Door[] doors;
-    [SerializeField] Transform parentTransform;
-    [SerializeField] Vector3[] doorPositions;
     [SerializeField] public Vector3 size;
-
-    //[SerializeField] Vector3[] quaternion;
-
-    void Awake()
+    [SerializeField] public GameObject [] walls;
+    [SerializeField] public int RoomId;
+    [SerializeField] private int wallCount;
+    [SerializeField] private GameObject wallPrefab;
+    [SerializeField] private Vector3 [] wallPos;
+    [SerializeField] private Vector3 [] wallRot;
+    [SerializeField] private Transform wallParentTransform;
+    Dictionary<Vector3,int> wallDict= new Dictionary< Vector3,int>();
+    /* void Awake()
     {
-        InstantiateDoors();
-    }
-    private void InstantiateDoors()
-    {
-        for (int i = 0; i < doors.Length; i++)
+
+        for (int i = 0; i < walls.Length; i++)
         {
-            /* GameObject door= Instantiate(doorPrefab,parentTransform) as GameObject;
-            door.transform.position = this.transform.position + doorPositions[i];
-            door.transform.rotation = Quaternion.Euler(quaternion[i]);
-            doors[i].doorMesh= door; 
-            doors[i].isOpen = false;
-            doors[i].isIntersect = false; */
-            GameObject door= Instantiate(doorPrefab) as GameObject;
-            door.transform.SetParent(parentTransform);
-            door.transform.position = this.transform.position + doorPositions[i];
-
-            GameObject triggerPrefab= Instantiate(doorTriggerPrefab) as GameObject;
-            triggerPrefab.transform.SetParent(doorTriggerPrefabParentTransform);
-            triggerPrefab.transform.position =door.transform.position ;
-
-            //door.transform.rotation = Quaternion.Euler(quaternion[i]);
-            //doors[i].doorMesh= door; 
-            doors[i].isOpen = false;
-            doors[i].isIntersect = false;
+            wallDict.Add(walls[i].transform.position,i);
+        }
+    } */
+    /* private void CreateWall()
+    {
+        for (int i = 0; i < wallCount; i++)
+        {
+            Instantiate(wallPrefab,)
         }
     }
+ */   /*  public void DeleteWall(Vector3 wallPos)
+    {
+        for (int i = 0; i < walls.Length; i++)
+        {
+            if(wallDict.ContainsKey(wallPos))
+            {
+                walls[wallDict[wallPos]].gameObject.SetActive(false);
+            }
+        }
+    } */
 }

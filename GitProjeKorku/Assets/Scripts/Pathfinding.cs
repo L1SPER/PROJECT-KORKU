@@ -99,8 +99,12 @@ public class Pathfinding : MonoBehaviour
         Node currentNode = endNode;
         //Debug.Log("Retrace path start: " + startNode.worldPosition);
         //Debug.Log("Retrace path endNode: " + endNode.worldPosition);
+        
         startNode.floor.floorType = FloorType.Red;
         endNode.floor.floorType = FloorType.Red;
+        grid.CheckPathNeighbors(grid.GetNeighbors(startNode),startNode);
+        grid.CheckPathNeighbors(grid.GetNeighbors(endNode),endNode);
+
         while (currentNode != startNode)
         {
             if (currentNode.parent == null)
@@ -113,10 +117,14 @@ public class Pathfinding : MonoBehaviour
             {
                 path.Add(currentNode);
                 currentNode.floor.floorType = FloorType.Yellow;
+                currentNode.roomId=0;//Path roomId
                 FloorManager.AddYellowFloor(currentNode);
             }
             currentNode = currentNode.parent;
         }
+
+        grid.CheckPathNeighbors(grid.GetNeighbors(startNode),startNode);
+        grid.CheckPathNeighbors(grid.GetNeighbors(endNode),endNode);
     }
     /// <summary>
     /// Düğümler arasındaki mesafeyi hesaplama (Manhattan)
@@ -144,4 +152,5 @@ public class Pathfinding : MonoBehaviour
             FindPath(new Vector3(edge.nodeA.point.x, 0, edge.nodeA.point.z), new Vector3(edge.nodeB.point.x, 0, edge.nodeB.point.z));
         }
     }
+
 }
