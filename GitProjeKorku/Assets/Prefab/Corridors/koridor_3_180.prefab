@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3007573653803129853}
   - component: {fileID: 1565447180269876910}
   - component: {fileID: 6305566508976733162}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Cube (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -120,7 +120,7 @@ GameObject:
   - component: {fileID: 7384507740275811269}
   - component: {fileID: 6576732406107041568}
   - component: {fileID: 9106018729252575948}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Cube (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -228,7 +228,7 @@ GameObject:
   - component: {fileID: 7037658084659029130}
   - component: {fileID: 1366187849011286193}
   - component: {fileID: 836852267920218361}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -336,7 +336,7 @@ GameObject:
   - component: {fileID: 823022666252011987}
   - component: {fileID: 3589397538764474691}
   - component: {fileID: 1422823618613994623}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Dary
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -444,7 +444,7 @@ GameObject:
   - component: {fileID: 2958916995063074717}
   - component: {fileID: 6957366036412245531}
   - component: {fileID: 5546973867801248882}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Cube (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -551,7 +551,7 @@ GameObject:
   - component: {fileID: 2751202507318324331}
   - component: {fileID: 682015415353305158}
   - component: {fileID: 8385789228377626636}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: koridor_3_180
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -644,7 +644,7 @@ GameObject:
   - component: {fileID: 3292416849075633038}
   - component: {fileID: 6957540186080014909}
   - component: {fileID: 6972756779626907460}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Cube (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

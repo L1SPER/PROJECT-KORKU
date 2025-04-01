@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2574232627007809454}
   - component: {fileID: 6618616281414251409}
   - component: {fileID: 653438997300008405}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Cube (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -120,7 +120,7 @@ GameObject:
   - component: {fileID: 6358594357738107393}
   - component: {fileID: 8178261824980883542}
   - component: {fileID: 294114136877749702}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Dary
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -228,7 +228,7 @@ GameObject:
   - component: {fileID: 7902413058207717127}
   - component: {fileID: 2709739515397010694}
   - component: {fileID: 3754641550937184819}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Cube (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -336,7 +336,7 @@ GameObject:
   - component: {fileID: 4008083286163515949}
   - component: {fileID: 887905402898398951}
   - component: {fileID: 4478884063255396665}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Cube (7)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -443,7 +443,7 @@ GameObject:
   - component: {fileID: 3667456726970559403}
   - component: {fileID: 7953997479221193274}
   - component: {fileID: 3191827532985401131}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: koridor_1_90
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -538,7 +538,7 @@ GameObject:
   - component: {fileID: 8945412080493776031}
   - component: {fileID: 3350261547899605787}
   - component: {fileID: 4947309491342296827}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Dary (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -646,7 +646,7 @@ GameObject:
   - component: {fileID: 4352836688455866139}
   - component: {fileID: 3142981455474527163}
   - component: {fileID: 4227540448842673698}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Cube (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -754,7 +754,7 @@ GameObject:
   - component: {fileID: 2375412569238752752}
   - component: {fileID: 7802723831335985482}
   - component: {fileID: 9107970074253907575}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Dars
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -862,7 +862,7 @@ GameObject:
   - component: {fileID: 7798450166741751891}
   - component: {fileID: 7727472536775582305}
   - component: {fileID: 3407100423867293362}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Cube (8)
   m_TagString: Untagged
   m_Icon: {fileID: 0}

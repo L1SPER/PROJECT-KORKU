@@ -15,6 +15,10 @@ public class FPSCameraController : MonoBehaviour
     private float horizontalAngle;
     [SerializeField] Transform playerBody;
     public bool canRotate;
+
+    [SerializeField] private float minAngle;
+    [SerializeField] private float maxAngle;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -40,7 +44,7 @@ public class FPSCameraController : MonoBehaviour
             verticalAngle -= verticalInput;
             horizontalAngle += horizontalInput;
 
-            verticalAngle = Mathf.Clamp(verticalAngle, -90f, 90f);
+            verticalAngle = Mathf.Clamp(verticalAngle, minAngle, maxAngle);
 
             transform.rotation = Quaternion.Euler(verticalAngle, horizontalAngle, 0f);
         }

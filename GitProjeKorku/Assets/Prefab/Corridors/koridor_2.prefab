@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8066629152486549289}
   - component: {fileID: 5877261855033503019}
   - component: {fileID: 6725154976172299389}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: koridor_2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -105,7 +105,7 @@ GameObject:
   - component: {fileID: 8179847465299691068}
   - component: {fileID: 5846725182110370581}
   - component: {fileID: 4569581648241687355}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Cube (12)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -213,7 +213,7 @@ GameObject:
   - component: {fileID: 5997018983255255695}
   - component: {fileID: 2188357292401900069}
   - component: {fileID: 8205771176455302537}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Cube (11)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -321,7 +321,7 @@ GameObject:
   - component: {fileID: 1445380804717971845}
   - component: {fileID: 8295766485558178623}
   - component: {fileID: 259940524032745808}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Dary
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -429,7 +429,7 @@ GameObject:
   - component: {fileID: 6842746205700636877}
   - component: {fileID: 5376537626705656893}
   - component: {fileID: 3269191627054537528}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Cube (10)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -537,7 +537,7 @@ GameObject:
   - component: {fileID: 6113036574716008263}
   - component: {fileID: 3323287975159513789}
   - component: {fileID: 4028808194976271136}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Cube (9)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -645,7 +645,7 @@ GameObject:
   - component: {fileID: 3947211573496570880}
   - component: {fileID: 2275465249601913943}
   - component: {fileID: 2418326025111981153}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Cube (8)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -753,7 +753,7 @@ GameObject:
   - component: {fileID: 1575644218281593116}
   - component: {fileID: 8365043797882525579}
   - component: {fileID: 6663434268988174035}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Dary (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
