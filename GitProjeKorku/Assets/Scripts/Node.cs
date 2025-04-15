@@ -14,7 +14,7 @@ public class Node
     public Floor floor;
 
     public Wall[] walls;
-    public int roomId;
+    public int roomId;//white floor=-1, Path roomId=0, other rooms=1+ 
     public Node( Vector3 _worldPost, int _gridX, int _gridY)
     {
         this.worldPosition = _worldPost;
@@ -78,8 +78,8 @@ public class Node
 }
 public enum FloorType
 {
-    White,// Walkable
+    whiteFloorRoomId,// Walkable
     Red,// Unwalkable
-    Yellow,//Path
+    yellowFloorRoomId,//Path
     None,
 }
