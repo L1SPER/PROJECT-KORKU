@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Loot : MonoBehaviour, IInteractable
+public class Loot : MonoBehaviour, IInteractable, ICollectible
 {
     [Header("Loot")]
     [SerializeField] public Item item;
@@ -21,8 +21,13 @@ public class Loot : MonoBehaviour, IInteractable
     {
         //Itemin ismi gozukebilir
     }
-    public void InteractWithPressingButton(Inventory playerInventory)
+    public void AddToInventory(Inventory playerInventory)
     {
         playerInventory.AddItem(item);
+    }
+
+    public void InteractWithPressingButton()
+    {
+        throw new System.NotImplementedException();
     }
 }

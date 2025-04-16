@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 3
   tags:
   - Door
+  - Train
   layers:
   - Default
   - TransparentFX

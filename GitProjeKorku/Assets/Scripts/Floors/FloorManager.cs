@@ -1,32 +1,41 @@
 using System.Collections.Generic;
+using UnityEngine;
 
-public static class FloorManager 
+public class FloorManager: MonoBehaviour
 {
-    public static List<Node> yellowFloors = new List<Node>();
-    public static List<Node> redFloors = new List<Node>();
-    
-    public static void AddYellowFloor(Node yellowFloor)
+    public List<Node> yellowFloors = new List<Node>();
+    public List<Node> redFloors = new List<Node>();
+
+    public void AddYellowFloor(Node yellowFloor)
     {
-        if(yellowFloor.floor.inTheList)
+        if (yellowFloor.floor.inTheList)
             return;
         yellowFloors.Add(yellowFloor);
         yellowFloor.floor.inTheList = true;
     }
-    public static void AddRedFloor(Node redFloor)
+    public void AddRedFloor(Node redFloor)
     {
-        if(redFloor.floor.inTheList)
+        if (redFloor.floor.inTheList)
             return;
         redFloors.Add(redFloor);
         redFloor.floor.inTheList = true;
     }
-    public static void RemoveYellowFloor(Node yellowFloor)
+    public void RemoveYellowFloor(Node yellowFloor)
     {
         yellowFloors.Remove(yellowFloor);
         yellowFloor.floor.inTheList = false;
     }
-    public static void RemoveRedFloor(Node redFloor)
+    public void RemoveRedFloor(Node redFloor)
     {
         redFloors.Remove(redFloor);
         redFloor.floor.inTheList = false;
+    }
+    public List<Node> GetYellowFloors()
+    {
+        return yellowFloors;
+    }
+     public List<Node> GetRedFloors()
+    {
+        return redFloors;
     }
 }

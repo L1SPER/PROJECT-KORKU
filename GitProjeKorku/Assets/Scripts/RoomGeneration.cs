@@ -6,11 +6,15 @@ using UnityEngine;
 
 public class RoomGeneration : MonoBehaviour
 {
-    [Header("StartRoom")]	
+    [Header("StartRoom")]
     [SerializeField] GameObject startRoom;
     [SerializeField] Vector3 startRoomPos;
     [SerializeField] bool startRoomActive;
-    [Header("Rooms")]	
+
+    [SerializeField] GameObject[] startRooms;
+    [SerializeField] Vector3[] startRoomPosses;
+    [SerializeField] bool startRoomsActive;
+    [Header("Rooms")]
     [SerializeField] Transform parentTransform;
     [SerializeField] LayerMask unwalkableMask;
     [SerializeField] GameObject[] rooms1x1;
@@ -33,7 +37,7 @@ public class RoomGeneration : MonoBehaviour
     int nodeDiameter;
     int roomId;
 
-    [Header("Pathfinding")]	
+    [Header("Pathfinding")]
     [SerializeField] private int extraEdgeCount;
     Grid grid;
     DelaunayTriangulation delaunayTriangulation;
@@ -49,13 +53,13 @@ public class RoomGeneration : MonoBehaviour
         grid = FindFirstObjectByType<Grid>();
         delaunayTriangulation = FindFirstObjectByType<DelaunayTriangulation>();
         graph = new Graph();
-        mst=FindFirstObjectByType<MST>();
-        drawMST=FindFirstObjectByType<DrawMST>();
+        mst = FindFirstObjectByType<MST>();
+        drawMST = FindFirstObjectByType<DrawMST>();
         pathfinding = FindFirstObjectByType<Pathfinding>();
     }
     void Start()
     {
-        roomId=1; //1 den baslayarak odalarin idsini verir.
+        roomId = 1; //1 den baslayarak odalarin idsini verir.
         x = grid.gridSizeX;
         z = grid.gridSizeZ;
         nodeDiameter = (int)grid.nodeDiameter;
@@ -67,7 +71,8 @@ public class RoomGeneration : MonoBehaviour
     /// </summary>
     private void CreateRooms()
     {
-        CreateRoom(startRoom,startRoomActive);
+        CreateRoom(startRoom, startRoomActive);
+        CreateRoom(startRooms, startRoomsActive);
         CreateRoom(rooms1x1, rooms1x1.Length, rooms1x1Active);
         CreateRoom(rooms1x2, rooms1x2.Length, rooms1x2Active);
         CreateRoom(rooms1x3, rooms1x3.Length, rooms1x3Active);
@@ -82,7 +87,6 @@ public class RoomGeneration : MonoBehaviour
     private void PathFunctions()
     {
         Debug.Log("CreateRooms() başladı.");
-
         var triangles = delaunayTriangulation.GenerateTriangulation(roomsPos);
         if (triangles == null || triangles.Count == 0)
         {
@@ -113,23 +117,55 @@ public class RoomGeneration : MonoBehaviour
         }
         drawMST.DrawEdges(mstEdges);
         pathfinding.FindPathBetweenTwoPoint(mstEdges);
+        //Train start
     }
+/*     private void OnExitScene()
+    {
+        roomsPos.Clear();
+        graph.nodes.Clear();
+        graph.edges.Clear();
+        mst.mstEdges.Clear();
+        mst.availableEdges.Clear();
+        mst.visited.Clear();
+    } */
     /// <summary>
-    /// Başlangıç odası oluşturur.
+    /// Başlangıç odası oluşturur. Başlangıç odasının alt kapısını açar.
     /// </summary>
     /// <param name="room"></param>
     /// <param name="isActive"></param>
     private void CreateRoom(GameObject room, bool isActive)
     {
-         if (isActive)
+        if (isActive)
         {
-            Vector3 startRoomWorldPos= grid.CalculateWorldPoint((int)startRoomPos.x, (int)startRoomPos.z);
+            Vector3 startRoomWorldPos = grid.CalculateWorldPoint((int)startRoomPos.x, (int)startRoomPos.z);
             GameObject startRoomTemp = Instantiate(room, startRoomWorldPos, Quaternion.identity);
             DrawRoom((int)startRoomPos.x, (int)startRoomPos.z, startRoomTemp);
-            Node currentNode= grid.NodeFromWorldPoint(startRoomWorldPos);
+            Node currentNode = grid.NodeFromWorldPoint(startRoomWorldPos);
             currentNode.walls[0].wallObject.SetActive(false);
             roomsPos.Add(new Point(startRoomWorldPos.x, startRoomWorldPos.z));
             startRoomTemp.transform.SetParent(parentTransform);
+        }
+    }
+    /// <summary>
+    /// Başlangıç odaları oluşturur. Başlangıç odasının alt kapısını açar.
+    /// </summary>
+    /// <param name="room"></param>
+    /// <param name="isActive"></param>
+    private void CreateRoom(GameObject[] room, bool isActive)
+    {
+        for (int i = 0; i < room.Length; i++)
+        {
+            if (isActive)
+            {
+                Vector3 startRoomWorldPos = grid.CalculateWorldPoint((int)startRoomPosses[i].x, (int)startRoomPosses[i].z);
+                GameObject startRoomTemp = Instantiate(room[i], startRoomWorldPos, Quaternion.identity);
+                DrawRoom((int)startRoomPosses[i].x, (int)startRoomPosses[i].z, startRoomTemp);
+                Node currentNode = grid.NodeFromWorldPoint(startRoomWorldPos);
+                if(i==0)
+                    currentNode.walls[0].wallObject.SetActive(false);
+                roomsPos.Add(new Point(startRoomWorldPos.x, startRoomWorldPos.z));
+                startRoomTemp.transform.SetParent(parentTransform);
+            }
         }
     }
     /// <summary>
@@ -145,11 +181,11 @@ public class RoomGeneration : MonoBehaviour
             for (int i = 0; i < length; i++)
             {
                 GameObject roomTemp = Instantiate(room[i]);
-                Vector2 randomGridPos=GetRandom(roomTemp);
-                Vector3 randomWorldPos = grid.CalculateWorldPoint((int)randomGridPos.x,(int)randomGridPos.y);
-                roomTemp.transform.position=new Vector3(randomWorldPos.x, 0, randomWorldPos.z);
-                transform.rotation=Quaternion.identity;
-                DrawRoom((int)randomGridPos.x,(int)randomGridPos.y,roomTemp);
+                Vector2 randomGridPos = GetRandom(roomTemp);
+                Vector3 randomWorldPos = grid.CalculateWorldPoint((int)randomGridPos.x, (int)randomGridPos.y);
+                roomTemp.transform.position = new Vector3(randomWorldPos.x, 0, randomWorldPos.z);
+                transform.rotation = Quaternion.identity;
+                DrawRoom((int)randomGridPos.x, (int)randomGridPos.y, roomTemp);
                 //Debug.Log("Random Pos: " + randomWorldPos);
                 roomsPos.Add(new Point((int)randomWorldPos.x, (int)randomWorldPos.z));
                 roomTemp.transform.SetParent(parentTransform);
@@ -168,19 +204,19 @@ public class RoomGeneration : MonoBehaviour
 
         while (attempts < maxAttempts)
         {
-            int xLocal=0,zLocal=0;
-            if(room.TryGetComponent<Room>(out Room roomComp))
+            int xLocal = 0, zLocal = 0;
+            if (room.TryGetComponent<Room>(out Room roomComp))
             {
-                xLocal= (int) roomComp.size.x / nodeDiameter;
-                zLocal = (int) roomComp.size.z / nodeDiameter;
+                xLocal = (int)roomComp.size.x / nodeDiameter;
+                zLocal = (int)roomComp.size.z / nodeDiameter;
             }
 
-            int xRandom = Randomize(3, x -2);
+            int xRandom = Randomize(3, x - 2);
             int zRandom = Randomize(3, z - 2);
             //Debug.Log("Random x: " + xRandom + " Random z: " + zRandom);
-            if (grid.IsRoomInsideOfGrid(x,xLocal,xRandom,z,zLocal,zRandom)&& CheckRoom(xRandom, zRandom, room))
+            if (grid.IsRoomInsideOfGrid(x, xLocal, xRandom, z, zLocal, zRandom) && CheckRoom(xRandom, zRandom, room))
             {
-                return new Vector3(xRandom,zRandom);
+                return new Vector3(xRandom, zRandom);
             }
             attempts++;
         }
@@ -216,7 +252,7 @@ public class RoomGeneration : MonoBehaviour
     /// <param name="room"></param>
     private void DrawRoom(int xRandom, int zRandom, GameObject room)
     {
-        room.GetComponent<Room>().RoomId=roomId;
+        room.GetComponent<Room>().RoomId = roomId;
         grid.DrawRoom(xRandom, zRandom, room, roomId);
         roomId++;
     }

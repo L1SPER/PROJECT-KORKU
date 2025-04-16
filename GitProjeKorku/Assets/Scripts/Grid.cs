@@ -6,6 +6,7 @@ using UnityEngine;
 public class Grid : MonoBehaviour
 {
     [Header("Floor References")]
+    FloorManager floorManager;
     [SerializeField] Transform parentFloorTransform;
     [SerializeField] GameObject whiteFloorPrefab;
 
@@ -40,7 +41,10 @@ public class Grid : MonoBehaviour
     [Header("DoorPrefabs")]
     [SerializeField] private GameObject doorPrefabUp;
     [SerializeField] private GameObject doorPrefabRight;
-
+    void Awake()
+    {
+        floorManager= FindFirstObjectByType<FloorManager>();
+    }
     void Start()
     {
         nodeDiameter = nodeRadius * 2;
@@ -205,7 +209,7 @@ public class Grid : MonoBehaviour
                 gridFloor[xRandom + i, zRandom + j].floor.floorType = FloorType.Red;
                 grid[xRandom + i, zRandom + j].roomId = roomId;
                 gridFloor[xRandom + i, zRandom + j].roomId = roomId;
-                FloorManager.AddRedFloor(grid[xRandom + i, zRandom + j]);
+                floorManager.AddRedFloor(grid[xRandom + i, zRandom + j]);
 
                 //Wall idlerini room idleriyle esitledim
                 for (int x = 0; x < grid[xRandom + i, zRandom + j].walls.Length; x++)

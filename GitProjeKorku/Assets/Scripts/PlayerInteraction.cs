@@ -77,10 +77,18 @@ public class PlayerInteraction : MonoBehaviour
                 //InteractableObj.InteractWithoutPressingButton(true);
                
                 if (Input.GetKeyDown(KeyCode.Mouse0)&& playerInventory.CanAdd())
-                {
-                    InteractedComp.InteractWithPressingButton(playerInventory);
-                    interactedObj.transform.SetPositionAndRotation(itemHoldPos.GetChild(playerInventory.currentSlotId).transform.position, itemHoldPos.GetChild(playerInventory.currentSlotId).transform.rotation);
-                    interactedObj.transform.SetParent(itemHoldPos.GetChild(playerInventory.currentSlotId).transform);
+                {   
+                    ICollectible collectibleComp = interactedObj.GetComponent<ICollectible>();
+                    if(collectibleComp!=null)
+                    {
+                        collectibleComp.AddToInventory(playerInventory);
+                        interactedObj.transform.SetPositionAndRotation(itemHoldPos.GetChild(playerInventory.currentSlotId).transform.position, itemHoldPos.GetChild(playerInventory.currentSlotId).transform.rotation);
+                        interactedObj.transform.SetParent(itemHoldPos.GetChild(playerInventory.currentSlotId).transform);
+                    }
+                    else
+                    {
+                        InteractedComp.InteractWithPressingButton();
+                    }
                     lastInteractableComp = null;
                     lastInteractedObj = null;
                 }

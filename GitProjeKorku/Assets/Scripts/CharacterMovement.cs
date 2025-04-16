@@ -1,9 +1,13 @@
+using System;
 using System.Collections;
+using JetBrains.Annotations;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CharacterMovement : MonoBehaviour
 {
     [Header("Player Movement References")]
+    private TrainMovement trainMovement;
     [SerializeField] private CharacterController controller;
     [SerializeField] private StaminaBar staminaBar;
 
@@ -39,6 +43,7 @@ public class CharacterMovement : MonoBehaviour
     private bool isMoving;
     private bool isWalking;
     private bool isRunning;
+    private bool isInsideOfTrain;
 
     private const float GRAVITY = -9.81f;
 
@@ -54,6 +59,7 @@ public class CharacterMovement : MonoBehaviour
         Movement();
         StaminaControl();
     }
+   
     /// <summary>
     /// Hareket fonksiyonu. Yürüyüş ve koşma hızını ayarlar, zıplama ve yer çekimini kontrol eder.
     /// </summary>
@@ -82,9 +88,16 @@ public class CharacterMovement : MonoBehaviour
         // Koşma mı yürüyüş mü?
         speed = isRunning ? runSpeed : walkSpeed;
 
-        controller.Move(move.normalized * speed * Time.deltaTime);
-        Jump();
+        Vector3 finalMovement = move.normalized * speed; // oyuncu hızı
+        if(trainMovement)
+            finalMovement += Vector3.right* trainMovement.GetCurrentSpeed(); 
 
+        controller.Move(finalMovement * Time.deltaTime);
+
+       
+        //controller.Move(move.normalized * speed * Time.deltaTime);
+        Jump();
+        
         controller.Move(velocity * Time.deltaTime);
     }
     /// <summary>
@@ -168,5 +181,13 @@ public class CharacterMovement : MonoBehaviour
         canJump = false;
         yield return new WaitForSeconds(canJumpDelayTime);
         canJump = true;
+    }
+    public void SetIsInsideOfTrain(bool _isInsideOfTrain)
+    {
+        isInsideOfTrain = _isInsideOfTrain;
+    }
+    public void SetTrainMovement(TrainMovement train)
+    {
+        trainMovement= train;
     }
 }

@@ -6,6 +6,7 @@ public class CorridorGeneration : MonoBehaviour
     [SerializeField] GameObject[] corridors;
     [SerializeField] Transform parentCorridors;
     Grid grid;
+    FloorManager floorManager;
 
     //Variables
     [SerializeField] private int randomIndexNumber;
@@ -16,6 +17,7 @@ public class CorridorGeneration : MonoBehaviour
     void Awake()
     {
         grid = FindFirstObjectByType<Grid>();
+        floorManager = FindFirstObjectByType<FloorManager>();
     }
     void Start()
     {
@@ -30,10 +32,10 @@ public class CorridorGeneration : MonoBehaviour
     {
         while(counter < randomIndexNumber)
         {
-            int randomIndex = Random.Range(0, FloorManager.yellowFloors.Count);
+            int randomIndex = Random.Range(0, floorManager.yellowFloors.Count);
             //Debug.LogError("Random index " + FloorManager.yellowFloors[randomIndex].gridX + " " + FloorManager.yellowFloors[randomIndex].gridY);
-            Node[] neighbors = grid.GetNeighborNodes(FloorManager.yellowFloors[randomIndex]);
-            if (grid.IsCorridorInsideOfGrid(FloorManager.yellowFloors[randomIndex].gridX, FloorManager.yellowFloors[randomIndex].gridY))
+            Node[] neighbors = grid.GetNeighborNodes(floorManager.yellowFloors[randomIndex]);
+            if (grid.IsCorridorInsideOfGrid(floorManager.yellowFloors[randomIndex].gridX, floorManager.yellowFloors[randomIndex].gridY))
             {
                 counter++;
                 for (int i = 0; i < neighbors.Length; i++)
@@ -42,7 +44,7 @@ public class CorridorGeneration : MonoBehaviour
                     if (neighbors[i]?.roomId == whiteFloorRoomId&& grid.IsExtraCorridorInsideOfGrid(neighbors[i].gridX, neighbors[i].gridY))
                     {
                         neighbors[i].roomId = yellowFloorRoomId;
-                        FloorManager.AddYellowFloor(neighbors[i]);
+                        floorManager.AddYellowFloor(neighbors[i]);
                     }
                 }
             }
@@ -53,10 +55,10 @@ public class CorridorGeneration : MonoBehaviour
     /// </summary>
     private void CreateCorridor()
     {
-        for (int i = 0; i < FloorManager.yellowFloors.Count; i++)
+        for (int i = 0; i < floorManager.yellowFloors.Count; i++)
         {
-            int index = GetObjectIndex(grid.GetNeighborNodes(FloorManager.yellowFloors[i]));
-            Vector3 nodeWorldPos = grid.CalculateWorldPoint(FloorManager.yellowFloors[i].gridX, FloorManager.yellowFloors[i].gridY);
+            int index = GetObjectIndex(grid.GetNeighborNodes(floorManager.yellowFloors[i]));
+            Vector3 nodeWorldPos = grid.CalculateWorldPoint(floorManager.yellowFloors[i].gridX, floorManager.yellowFloors[i].gridY);
             if (index >= 0)
             {
                 GameObject roomTemp = Instantiate(corridors[index], nodeWorldPos, corridors[index].transform.rotation);

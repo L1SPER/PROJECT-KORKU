@@ -4,9 +4,11 @@ using UnityEngine;
 public class Pathfinding : MonoBehaviour
 {
     Grid grid;
+    FloorManager floorManager;
     void Awake()
     {
         grid = FindFirstObjectByType<Grid>();
+        floorManager = FindFirstObjectByType<FloorManager>();
     }
     /// <summary>
     /// 2 nokta arasındaki yolun bulunması
@@ -118,7 +120,7 @@ public class Pathfinding : MonoBehaviour
                 path.Add(currentNode);
                 currentNode.floor.floorType = FloorType.yellowFloorRoomId;
                 currentNode.roomId=0;//Path roomId
-                FloorManager.AddYellowFloor(currentNode);
+                floorManager.AddYellowFloor(currentNode);
             }
             currentNode = currentNode.parent;
         }
